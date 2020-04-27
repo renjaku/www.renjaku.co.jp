@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="description" content="コンピュータシステムの企画、開発、販売及び保守に関する業務を承ります。">
+<title>contacts - 連雀株式会社</title>
+<link rel="icon" href="/favicon.ico">
+<link rel="stylesheet" href="/style.css">
+<style>
+input[type=text], textarea {
+  display: block;
+  margin-bottom: .5rem;
+  padding: .5rem;
+  width: 10rem;
+}
+textarea {
+  min-height: 4rem;
+}
+button {
+  display: block;
+  margin-bottom: .5rem;
+  padding: .25rem .5rem;
+  border-radius: .25rem;
+}
+</style>
+<script>
+function send() {
+  let email = document.querySelector('input[type=text]');
+  let message = document.querySelector('textarea');
+  if (!email.value || email.value.split('@').length != 2 || !message.value) {
+    alert('入力項目に不足があります。');
+    return;
+  }
+  let req = new XMLHttpRequest();
+  req.open('POST', 'https://discordapp.com/api/webhooks/701028409798819871/mzmk9CzOU2nUqRDiJrGknub3rit25jbnIKRbP4Uy4Ni7HgLqtoztjyUt4ji-vIe-a9a8');
+  req.setRequestHeader('Content-Type', 'application/json');
+  req.onload = () => {
+    alert('送信が完了しました。内容を確認次第ご返信いたしますので、しばらくお待ちください。');
+    email.value = message.value = null;
+  };
+  req.onerror = () => {
+    alert('There was an error processing your request. Please wait and try again later.');
+  };
+  req.send(JSON.stringify({content: `@everyone ${message.value}\n\nReply-To: ${email.value}`}));
+}
+</script>
+</head>
+<body>
+<noscript>
+  We're sorry, but it will not work properly unless JavaScript is enabled.
+  Please enable it to continue.
+</noscript>
+<header>
+  <h1>連雀株式会社</h1>
+  <nav>
+    <ul>
+      <li><a href="/">home</a></li>
+      <li><a href="/profiles">profiles</a></li>
+      <li><a href="/contacts">contacts</a></li>
+      <li><a href="/finances">finances</a></li>
+    </ul>
+  </nav>
+</header>
+<main>
+  <section>
+    <h1>contacts</h1>
+    <article>
+      <h2>address</h2>
+      <p>
+        〒150-0031<br>
+        東京都渋谷区桜丘町23番17号<br>
+        シティコート桜丘408
+      </p>
+      <p>
+        408 City Court Sakuragaoka,<br>
+        23-17, Sakuragaoka-cho,<br>
+        Shibuya-ku, Tokyo 150-0031, Japan
+      </p>
+    </article>
+    <article>
+      <h2>sns</h2>
+      <ul>
+        <li><a href="https://www.facebook.com/maesin39">Facebook</a></li>
+      </ul>
+    </article>
+    <article>
+      <h2>email</h2>
+      <input type="text" placeholder="your@email.address">
+      <textarea placeholder="Please enter your message."></textarea>
+      <button onclick="send()">send</button>
+    </article>
+  </section>
+</main>
+<footer>
+  <small>(C) <script>document.write(new Date().getFullYear())</script> Renjaku Inc.</small>
+</footer>
+</body>
+</html>
