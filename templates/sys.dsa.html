@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="description" content="コンピュータシステムの企画、開発、販売及び保守に関する業務を承ります。">
+<title>コンピュータシステム開発委託契約書 - 連雀株式会社</title>
+<link rel="icon" href="/favicon.ico">
+<link rel="stylesheet" href="/style.css">
+<link rel="stylesheet" href="/templates/agreement.css">
+<script src="https://cdn.jsdelivr.net/npm/vue@2.6.11/dist/vue.min.js"></script>
+</head>
+<body>
+<main>
+  <h1>コンピュータシステム開発委託契約書</h1>
+
+  <section>
+    <h1>目的</h1>
+    <p>(甲) 連雀株式会社 は <a href="#you">(乙)</a> {{ you.corp || you.name }} に対し、コンピュータシステム開発を委託し、乙はこれを受託した。</p>
+  </section>
+
+  <section>
+    <h1>期限</h1>
+    <p>乙は、本件委託業務を甲乙間で別途定めるスケジュールに従い、誠実に実施し、本件システムを甲に納入するものとする。</p>
+  </section>
+
+  <section>
+    <h1>委託料</h1>
+    <p>本件委託業務の委託料は総額金 {{ rewardAmount.yen | number_format }} 円 (税抜) とし、甲は乙に対して、次の通りに、乙の指定する銀行口座に振り込んで支払うものとする。</p>
+    <ul>
+      <li>本契約締結と同時に金 <span @click="howMuchIsRewardYen(0)">{{ rewards[0].yen | number_format }}</span> 円</li>
+      <li>本件システムの納品日に限り金 <span @click="howMuchIsRewardYen(1)">{{ rewards[1].yen | number_format }}</span> 円</li>
+      <li>本件システムの検収完了後 30 日以内に金 <span @click="howMuchIsRewardYen(2)">{{ rewards[2].yen | number_format }}</span> 円</li>
+    </ul>
+    <p>甲および乙は、本件システムの仕様等に変更があった場合には、甲乙協議の上、委託料の変更を相手方に請求することができる。</p>
+  </section>
+
+  <section>
+    <h1>再委託の禁止</h1>
+    <p>乙は、甲の書面による事前の承諾を得た場合を除いては、本件委託業務の全部または一部を第三者に委託してはならない。</p>
+  </section>
+
+  <section>
+    <h1>資料等の提供</h1>
+    <p>甲は乙に対して、乙が本件委託業務を遂行するにあたり必要とされる全ての資料等を交付する。</p>
+  </section>
+
+  <section>
+    <h1>資料等の保管・管理</h1>
+    <p>乙は、本件委託業務に関して甲より提供された全ての資料等を乙の指定する善良なる管理者の注意義務をもって保管・管理しなければならない。</p>
+    <p>乙は甲の書面による事前の承諾を得ないで、前項の資料等を複製または第三者への交付、その他本件委託業務以外の目的に使用してはならない。</p>
+  </section>
+
+  <section>
+    <h1>秘密保持</h1>
+    <p>乙は、本契約の期間中および本契約終了後においても、本契約の履行にあたり知り得た甲に関する秘密情報を、第三者に開示もしくは漏洩してはならない。</p>
+    <p>乙は、本契約の履行に関与する乙の従業員その他乙の指名した者についても、乙の全責任でもって前項の義務を遵守させなければならない。</p>
+  </section>
+
+  <section>
+    <h1>検収</h1>
+    <p>甲は乙に対して、本件システムの納入後〇〇日以内に瑕疵の有無について検査を行い、その検査結果を検査終了後遅滞なく通知しなければならない。</p>
+    <p>乙は、前項に基づき甲から本件システムに瑕疵が発見された旨の通知を受けた場合には、甲乙で別途協議して定める期限までにかかる瑕疵を修補し、再度納入するものとする。</p>
+    <p>乙が、瑕疵が発見されなかった旨の通知を受けた場合、または甲が検査期間が満了したものの通知を発しない場合、本件システムの検収が完了したものとする。</p>
+  </section>
+
+  <section>
+    <h1>資料等の返還</h1>
+    <p>乙は甲に対して、甲から提供された全ての資料等を、検収完了後遅滞なく返還するものとする。</p>
+  </section>
+
+  <section>
+    <h1>保証</h1>
+    <p>乙は甲に対して、本件システムが別紙仕様書どおりに作成され、第三者の著作権その他の権利を侵害していないことを保証する。</p>
+  </section>
+
+  <section>
+    <h1>著作権の帰属</h1>
+    <p>本件システムに関する著作権に対して、委託料の完済をもって、乙から甲に全て移転するものとする。乙は甲に対して、本件システムの著作権の移転登録手続きに協力する。ただし、登録手続きに要する費用は全額甲の負担とする。</p>
+    <p>ただし、同種のシステムに共通に利用されるノウハウ等に関する権利は乙に留保される。</p>
+    <p>本件システムのうち、本契約に基づき乙が甲に使用許諾するシステムに関する著作権は乙に留保される。ただし、乙は甲に対し、これを改変し複製する権利を無償で許諾する。</p>
+  </section>
+
+  <section>
+    <h1>譲渡禁止</h1>
+    <p>甲および乙は、事前に相手方の書面による同意を得た場合を除いては、本契約に基づいて発生する権利についてはそのいかなるものも第三者に譲渡し、または担保の目的に供してはならない。</p>
+  </section>
+
+  <section>
+    <h1>協議</h1>
+    <p>甲乙双方は、この契約を尊重し、この契約に定める事項について疑義を生じたとき、またはこの契約に定めのない事項について意見を異にしたときは、誠意をもってその解決にあたる。</p>
+  </section>
+
+  <address>
+    <time :datetime="now.toISOString()">{{ formatDate(now, 'yyyy/MM/dd') }}</time>
+
+    <dl id="me">
+      <dt>甲</dt>
+      <dd>
+        <div>{{ me.addr }}</div>
+        <div>{{ me.corp }}</div>
+        <div>{{ me.position }} {{ me.name }}</div>
+      </dd>
+    </dl>
+
+    <dl id="you">
+      <dt>乙</dt>
+      <dd>
+        <div @click="whereAreYou">{{ you.addr || 'あなた自身または会社の住所' }}</div>
+        <div @click="whatisYourCorp">{{ you.corp || 'あなたの会社 (任意)'}}</div>
+        <div>
+          <span @click="whatIsYourPos">{{ you.position  || 'あなたの役職 (任意)'}}</span>
+          <span @click="whoAreYou">{{ you.name || 'あなたの名前' }}</span>
+        </div>
+      </dd>
+    </dl>
+  </address>
+</main>
+<button>ダウンロード</button>
+<script src="agreement.js"></script>
+<script>
+var vue = new Vue({
+  el: 'main',
+  data: {
+    now: new Date(),
+    me: {
+      name: '前田 紳太郎',
+      addr: '東京都渋谷区桜丘町 23-17 シティコート桜丘 408',
+      corp: '連雀株式会社',
+      position: '代表取締役社長'
+    },
+    you: JSON.parse(localStorage.getItem('you')) || {
+      name: null,
+      addr: null,
+      corp: null,
+      position: null
+    },
+    rewards: [{ yen: 0 }, { yen: 0 }, { yen: 0 }],
+  },
+  watch: {
+    me: {
+      handler(value, prev) {},
+      deep: true
+    },
+    you: {
+      handler(value, prev) {
+        localStorage.setItem('you', JSON.stringify(this.you))
+      },
+      deep: true
+    }
+  },
+  computed: {
+    rewardAmount() {
+      return { yen: this.rewards.map(x => x.yen).reduce((a, b) => a + b) };
+    }
+  },
+  methods: {
+    whoAreYou() {
+      this.you.name = window.prompt('あなたの名前');
+    },
+    whereAreYou() {
+      this.you.addr = window.prompt('あなた自身または会社の住所');
+    },
+    whatisYourCorp() {
+      this.you.corp = window.prompt('あなたの会社');
+    },
+    whatIsYourPos() {
+      this.you.position = window.prompt('あなたの役職');
+    },
+    howMuchIsRewardYen(index) {
+      this.rewards[index].yen = parseInt(window.prompt(index + 1 + 'つ目の報酬額'));
+    },
+  },
+});
+setInterval(() => vue.now = new Date(), 1000);
+document.querySelector('button').onclick = OnDownload({
+  get date() { return document.querySelector('time').innerText },
+  get me() { return vue.me },
+  get you() { return vue.you }
+});
+</script>
+</body>
+</html>

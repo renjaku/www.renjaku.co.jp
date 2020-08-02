@@ -18,7 +18,7 @@ nav ul {
   list-style: none;
 }
 nav li {
-  margin-right: .75rem;
+  margin: 0 .75rem 0 0;
 }
 article {
   margin: .75rem;
@@ -28,6 +28,9 @@ a {
 }
 a:hover {
   color: #304999;
+}
+li {
+  margin: .25rem 0;
 }
 footer {
   margin: 1rem;

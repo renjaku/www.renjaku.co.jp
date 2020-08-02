@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="description" content="コンピュータシステムの企画、開発、販売及び保守に関する業務を承ります。">
+<title>秘密保持契約書 - 連雀株式会社</title>
+<link rel="icon" href="/favicon.ico">
+<link rel="stylesheet" href="/style.css">
+<link rel="stylesheet" href="/templates/agreement.css">
+<script src="https://cdn.jsdelivr.net/npm/vue@2.6.11/dist/vue.min.js"></script>
+</head>
+<body>
+<main>
+  <h1>秘密保持契約書</h1>
+
+  <section>
+    <h1>目的</h1>
+    <p>(甲) 連雀株式会社 と <a href="#you">(乙)</a> {{ you.corp || you.name }} は、甲乙間で相互に開示される情報の秘密保持に関し、次の通り合意した。</p>
+  </section>
+
+  <section>
+    <h1>秘密情報</h1>
+    <p>本契約における秘密情報は、甲が乙に委託した業務に関する全ての情報とする。</p>
+    <p>ただし、開示を受けた当事者が書面によってその根拠を立証できる場合に限り、以下の情報は秘密情報の対象外とするものとする。</p>
+    <ul>
+      <li>開示を受けたときに既に保有していた情報</li>
+      <li>開示を受けた後、秘密保持義務を負うことなく第三者から正当に入手した情報</li>
+      <li>開示を受けた後、相手方から開示を受けた情報に関係なく独自に取得し、又は創出した情報</li>
+      <li>開示を受けたときに既に公知であった情報</li>
+      <li>開示を受けた後、自己の責めに帰し得ない事由により公知となった情報</li>
+    </ul>
+  </section>
+
+  <section>
+    <h1>守秘義務</h1>
+    <p>被開示者は、秘密情報を善良なる管理者と認められる程度の注意をもって保持し、使途および目的のいかんに関わらず、第三者に対して、直接、間接を問わず開示または漏洩してはならない。</p>
+    <p>ただし、次の場合には、前項の規定は適用しない。</p>
+    <ul>
+      <li>開示者の事前の書面による承諾がある場合</li>
+      <li>法律上の手続に従って、開示を要請された場合</li>
+      <li>被開示者または開示者が証券取引所の定める各種規則に基づく要請に従って開示する場合</li>
+      <li>法令上秘密保持が義務付けられている専門家に開示する場合</li>
+    </ul>
+  </section>
+
+  <section>
+    <h1>複製の禁止</h1>
+    <p>被開示者は、使途、目的及び方法のいかんに関わらず、開示を受けた秘密情報を複製してはならない。ただし、開示者の事前の書面による承諾がある場合はこの限りではない。</p>
+  </section>
+
+  <section>
+    <h1>損害賠償</h1>
+    <p>甲または乙、または双方と関係のある第三者が秘密情報を開示するなど、本契約の条項に違反した場合には、甲または乙は、相手方が必要と認める措置を直ちに講ずるとともに、相手方に生じた損害を賠償しなければならない。</p>
+  </section>
+
+  <section>
+    <h1>有効期限</h1>
+    <p>本契約の有効期限は、締結日から 1 年の間に開示された秘密情報の全てに適用される。期間満了 1 ヵ月前までに甲乙双方より契約終了の書面による通知がないときは、本契約は同一条件でさらに 1 年間更新するものとし、その後も同様とする。</p>
+  </section>
+
+  <section>
+    <h1>協議事項</h1>
+    <p>本契約に定めのない事項または本契約に疑義が生じた場合は、協議の上解決する。</p>
+  </section>
+
+  <section>
+    <h1>管轄</h1>
+    <p>本契約書の準拠法は日本法とし、また、本契約により生ずる紛争については、東京地方裁判所をもって第一審の専属管轄裁判所とする。</p>
+  </section>
+
+  <address>
+    <time :datetime="now.toISOString()">{{ formatDate(now, 'yyyy/MM/dd') }}</time>
+
+    <dl id="me">
+      <dt>甲</dt>
+      <dd>
+        <div>{{ me.addr }}</div>
+        <div>{{ me.corp }}</div>
+        <div>{{ me.position }} {{ me.name }}</div>
+      </dd>
+    </dl>
+
+    <dl id="you">
+      <dt>乙</dt>
+      <dd>
+        <div @click="whereAreYou">{{ you.addr || 'あなた自身または会社の住所' }}</div>
+        <div @click="whatisYourCorp">{{ you.corp || 'あなたの会社 (任意)'}}</div>
+        <div>
+          <span @click="whatIsYourPos">{{ you.position  || 'あなたの役職 (任意)'}}</span>
+          <span @click="whoAreYou">{{ you.name || 'あなたの名前' }}</span>
+        </div>
+      </dd>
+    </dl>
+  </address>
+</main>
+<button>ダウンロード</button>
+<script src="agreement.js"></script>
+<script>
+var vue = new Vue({
+  el: 'main',
+  data: {
+    now: new Date(),
+    me: {
+      name: '前田 紳太郎',
+      addr: '東京都渋谷区桜丘町 23-17 シティコート桜丘 408',
+      corp: '連雀株式会社',
+      position: '代表取締役社長'
+    },
+    you: JSON.parse(localStorage.getItem('you')) || {
+      name: null,
+      addr: null,
+      corp: null,
+      position: null
+    },
+  },
+  watch: {
+    me: {
+      handler(value, prev) {},
+      deep: true
+    },
+    you: {
+      handler(value, prev) {
+        localStorage.setItem('you', JSON.stringify(this.you))
+      },
+      deep: true
+    }
+  },
+  methods: {
+    whoAreYou() {
+      this.you.name = window.prompt('あなたの名前');
+    },
+    whereAreYou() {
+      this.you.addr = window.prompt('あなた自身または会社の住所');
+    },
+    whatisYourCorp() {
+      this.you.corp = window.prompt('あなたの会社');
+    },
+    whatIsYourPos() {
+      this.you.position = window.prompt('あなたの役職');
+    },
+  },
+});
+setInterval(() => vue.now = new Date(), 1000);
+document.querySelector('button').onclick = OnDownload({
+  get date() { return document.querySelector('time').innerText },
+  get me() { return vue.me },
+  get you() { return vue.you }
+});
+</script>
+</body>
+</html>
