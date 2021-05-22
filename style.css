@@ -1,5 +1,8 @@
 @import url("https://osync.io/fonts/FiraCode/fira_code.css");
 
+* {
+  box-sizing: border-box;
+}
 body {
   margin: 1rem;
   padding: 0;
@@ -50,4 +53,13 @@ footer small {
   margin: 1rem;
   text-align: center;
   color: #666;
+}
+dt {
+  margin-block-end: .5em;
+}
+dt:not(:first-child) {
+  margin-block-start: 1em;
+}
+dd {
+  margin-inline-start: 1em;
 }
