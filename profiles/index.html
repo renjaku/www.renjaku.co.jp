@@ -8,6 +8,41 @@
 <link rel="icon" href="/favicon.ico">
 <link rel="stylesheet" href="/style.css">
 <script src="/ga.js"></script>
+<style>
+article {
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+}
+article > div {
+  display: flex;
+  flex-direction: column;
+  gap: .75em;
+}
+article > div > div:first-child {
+  font-weight: bold;
+}
+article > div > div:not(:first-child) {
+  margin-left: 1em;
+}
+@media screen and (min-width: 1024px) {
+  article {
+    display: table;
+    border-collapse: collapse;
+  }
+  article > div {
+    display: table-row;
+  }
+  article > div > div {
+    display: table-cell;
+    height: 2em;
+    vertical-align: middle;
+  }
+  article > div > div:not(:last-child) {
+    padding-right: 1.5em;
+  }
+}
+</style>
 </head>
 <body>
 <noscript>
@@ -36,18 +71,38 @@
   <section>
     <h1>profiles</h1>
     <article>
-      <dl>
-        <dt>商号</dt>
-        <dd>連雀株式会社 (Renjaku Inc.)</dd>
-        <dt>事業内容</dt>
-        <dd>コンピュータシステムの企画、開発、販売及び保守に関する業務</dd>
-        <dt>設立</dt>
-        <dd>2020/1</dd>
-        <dt>資本金</dt>
-        <dd>&yen;1,000,000</dd>
-        <dt>代表者</dt>
-        <dd>代表取締役社長 前田 紳太郎</dd>
-      </dl>
+      <div>
+        <div>商号</div>
+        <div>連雀株式会社 (Renjaku Inc.)</div>
+      </div>
+      <div>
+        <div>事業内容</div>
+        <div>コンピュータシステムの企画、開発、販売及び保守に関する業務</div>
+      </div>
+      <div>
+        <div>設立</div>
+        <div>2020/1</div>
+      </div>
+      <div>
+        <div>資本金</div>
+        <div>&yen;1,000,000</div>
+      </div>
+      <div>
+        <div>代表者</div>
+        <div>代表取締役社長 前田 紳太郎</div>
+      </div>
+      <div>
+        <div>法人番号</div>
+        <div>
+          <a href="https://www.houjin-bangou.nta.go.jp/henkorireki-johoto.html?selHouzinNo=9011001131790">
+            9011001131790
+          </a>
+        </div>
+      </div>
+      <div>
+        <div>適格請求書発行</div>
+        <div>申請準備中</div>
+      </div>
     </article>
   </section>
 </main>

@@ -63,3 +63,9 @@ dt:not(:first-child) {
 dd {
   margin-inline-start: 1em;
 }
+@media screen and (min-width: 1024px) {
+  body {
+    margin-left: 4em;
+    margin-right: 4em;
+  }
+}
