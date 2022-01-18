@@ -33,7 +33,7 @@ button {
 </style>
 <script>
 function rot13(s) {
-  return s.replace(/[a-zA-Z]/g, c=> String.fromCharCode((c <= 'Z' ? 90 : 122) >= (c = c.charCodeAt(0) + 13) ? c : c - 26));
+  return s.replace(/[a-zA-Z]/g, c => String.fromCharCode((c <= 'Z' ? 90 : 122) >= (c = c.charCodeAt(0) + 13) ? c : c - 26));
 }
 
 function send() {
@@ -44,7 +44,7 @@ function send() {
     return;
   }
   let req = new XMLHttpRequest();
-  req.open('POST', rot13('uggcf://qvfpbeq.pbz/ncv/jroubbxf/701028409798819871/zmzx9PmBH2aHdEQvWeTxaho3evg25woaVXEoC4Hl4Av7UtYdgbmgwlHg4wv-iVr-n9n8'));
+  req.open('POST', rot13('uggcf://qvfpbeq.pbz/ncv/jroubbxf/932997533146415195/jtRIrb_d030zHkuXXSC6p-aEp4eOyKDkBdVn9eJBMGnlh8ZSs7xy7-8XCpAcHnGKmWrG'));
   req.setRequestHeader('Content-Type', 'application/json');
   req.onload = () => {
     alert('送信が完了しました。内容を確認次第ご返信いたしますので、しばらくお待ちください。');
