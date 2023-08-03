@@ -70,3 +70,6 @@ dd {
     margin-right: 4em;
   }
 }
+:is(section, article):not(.message) > h1::after {
+  content: ":";
+}
