@@ -10,6 +10,10 @@ dd {
   margin-left: 0;
 }
 
+dd :is(ul, ol) {
+  margin: 0;
+}
+
 @media screen and (min-width: 1024px) {
   dd {
     margin-left: 1em;
