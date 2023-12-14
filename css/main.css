@@ -1,5 +1,5 @@
 :root {
-  --stylish-font-family: "Fira Code", "monospace", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --stylish-font-family: "Fira Code", "monospace", "Noto Sans JP", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 :is(header, footer) {

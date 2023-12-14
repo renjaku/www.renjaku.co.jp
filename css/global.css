@@ -1,12 +1,26 @@
 @import url("https://osync.io/fonts/FiraCode/fira_code.css");
 
+@font-face {
+  font-family: "Noto Sans JP";
+  font-style: normal;
+  font-weight: 400;
+  src: url("/fonts/NotoSansJP-Regular.woff") format("woff");
+}
+
+@font-face {
+  font-family: "Noto Sans JP";
+  font-style: normal;
+  font-weight: 700;
+  src: url("/fonts/NotoSansJP-Bold.woff") format("woff");
+}
+
 * {
   box-sizing: border-box;
 }
 body {
   margin: 1em;
   padding: 0;
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: "Noto Sans JP", "Helvetica Neue", Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   color: #2c3e50;
