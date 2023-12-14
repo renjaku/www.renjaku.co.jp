@@ -1,5 +1,17 @@
-:is(section, article):not(.message) :is(h1, dt)::after {
-  content: ":";
+:root {
+  --stylish-font-family: "Fira Code", "monospace", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+:is(header, footer) {
+  font-family: var(--stylish-font-family);
+}
+
+:is(section, article):not(.message) :is(h1, dt) {
+  font-family: var(--stylish-font-family);
+
+  &::after {
+    content: ":";
+  }
 }
 
 dt {
