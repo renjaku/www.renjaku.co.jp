@@ -9,6 +9,14 @@
 <link rel="stylesheet" href="/css/global.css">
 <link rel="stylesheet" href="/css/main.css">
 <script src="/ga.js"></script>
+<style>
+address {
+  display: block;
+  font-style: normal;
+  font-weight: normal;
+  margin: .5em 0;
+}
+</style>
 </head>
 <body>
 <noscript>
@@ -55,8 +63,22 @@
         </dd>
 
         <dt>資本金</dt>
-        <dd data-biz-capital-paid>
+        <dd data-biz-capital-stock>
           &yen;1,000,000
+        </dd>
+
+        <dt>本社所在地</dt>
+        <dd>
+          <address lang="ja" data-biz-address>
+            〒150-0031<br>
+            東京都渋谷区桜丘町23番17号<br>
+            シティコート桜丘408
+          </address>
+          <address lang="en" data-biz-address>
+            408 City Court Sakuragaoka,<br>
+            23-17, Sakuragaoka-cho,<br>
+            Shibuya-ku, Tokyo 150-0031, Japan
+          </address>
         </dd>
 
         <dt>代表者</dt>
@@ -104,8 +126,13 @@
         <dd>
           <ul>
             <li>
-              <a href="https://info.gbiz.go.jp/hojin/ichiran?hojinBango=9011001131790">
+              <a href="https://info.gbiz.go.jp/hojin/ichiran?hojinBango=9011001131790" data-biz-link>
                 連雀株式会社 | gBizINFO
+              </a>
+            </li>
+            <li>
+              <a href="https://www.facebook.com/renjaku.co.jp" data-biz-link>
+                連雀株式会社 | Facebook
               </a>
             </li>
           </ul>
