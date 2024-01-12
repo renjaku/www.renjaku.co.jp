@@ -1,0 +1,25 @@
+- type: join-user
+  date: 2023-01-04T11:00:00+09:00
+  username: taro.yamada@example.com
+  name: Taro Yamada
+  nameJa: 山田 太郎
+  zone: 1000001
+  address: 東京都千代田区千代田1番1号
+  board: true
+  salary: 200000
+  note: salary was decided at 定時株主総会 on 2023-01-04T11:00:00+09:00
+
+- type: register-social-insurance
+  date: 2023-01-04T00:00:00+09:00
+  health: kyoukaikenpo.or.jp/tokyo  # ref: https://github.com/renjaku/opendata
+
+- type: update-user
+  date: 2023-04-01T00:00:00+09:00
+  username: taro.yamada@example.com
+  dependents: 0
+
+- type: update-user
+  date: 2024-01-04T11:00:00+09:00
+  username: taro.yamada@example.com
+  salary: 300000
+  note: salary was decided at 定時株主総会 on 2024-01-04T11:00:00+09:00

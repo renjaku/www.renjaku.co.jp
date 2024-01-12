@@ -1,0 +1,817 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="コンピュータシステムの企画、開発、販売及び保守に関する業務を承ります。">
+<title>給与明細作成サービス - 連雀株式会社</title>
+<link rel="icon" href="/favicon.ico">
+<link rel="stylesheet" href="/css/global.css">
+<link rel="stylesheet" href="/css/main.css">
+<script src="https://unpkg.com/js-yaml@4.1.0/dist/js-yaml.min.js"></script>
+<script src="https://unpkg.com/moment@2.30.1/min/moment.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/encoding-japanese/2.0.0/encoding.min.js" integrity="sha512-AhAMtLXTbhq+dyODjwnLcSlytykROxgUhR+gDZmRavVCNj6Gjta5l+8TqGAyLZiNsvJhh3J83ElyhU+5dS2OZw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="/ga.js"></script>
+<style>
+section {
+  > h1 {
+    margin-bottom: 0;
+  }
+
+  > details {
+    margin: .75em 0;
+  }
+}
+
+details {
+  width: max-content;
+  font-size: .9em;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: .75em;
+
+  button[type="submit"] {
+    height: 2em;
+  }
+}
+
+article {
+  display: flex;
+  flex-direction: column;
+  gap: .5em;
+  margin: 0;
+
+  h1 {
+    margin: 0;
+  }
+}
+
+.hidden {
+  display: none !important;
+}
+
+.data-dropbox {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 320px;
+  border: 2px gray dashed;
+  color: gray;
+
+  &:hover {
+    border-color: black;
+    color: black;
+  }
+}
+
+.data-viewer {
+  height: 320px;
+}
+
+table.data-viewer {
+  border-collapse: collapse;
+
+  thead {
+    th {
+      position: sticky;
+      top: 0;
+      z-index: 1;
+    }
+  }
+
+  th {
+    background-color: #ccc;
+  }
+
+  :is(th, td) {
+    padding: .5em;
+    border: 1px solid gray;
+    max-width: 16em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+.control {
+  button[type="submit"] {
+    padding: 0 1em;
+  }
+}
+
+@media screen and (min-width: 1024px) {
+  form {
+    margin-left: 1em;
+  }
+}
+</style>
+</head>
+<body>
+<noscript>
+  We're sorry, but it will not work properly unless JavaScript is enabled.
+  Please enable it to continue.
+</noscript>
+<header>
+  <a href="/">
+    <img
+      src="/renjaku.svg"
+      width="155"
+      height="44"
+      title="Renjaku Inc."
+      alt="Renjaku Inc.">
+  </a>
+  <nav>
+    <ul>
+      <li><a href="/">home</a></li>
+      <li><a href="/profiles">profiles</a></li>
+      <li><a href="/contacts">contacts</a></li>
+    </ul>
+  </nav>
+  <a href="https://github.com/renjaku/www.renjaku.co.jp" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+</header>
+<main>
+  <section>
+    <h1>給与明細作成サービス</h1>
+
+    <details>
+      <summary>本サービスについての補足</summary>
+      <p>
+        <ul>
+          <li>入力データファイルに従い、給与計算を行うサービス</li>
+          <li>計算結果をファイル (給与明細.csv/源泉徴収.csv) にまとめて出力する</li>
+        </ul>
+      </p>
+    </details>
+
+    <form onsubmit="execute(this); return false">
+      <article>
+        <h1>データファイル</h1>
+
+        <details>
+          <summary>データファイルとは？</summary>
+          <p>
+            <ul>
+              <li>給与計算のための会社情報を時系列順にまとめたもの</li>
+              <li>ファイル形式は YAML/JSON</li>
+              <li><a href="data.template.yml">サンプル</a></li>
+            </ul>
+          </p>
+        </details>
+
+        <div class="data-dropbox"
+          ondragenter="dragenter(event)"
+          ondragover="dragover(event)"
+          ondrop="drop(event)"
+          onclick="dataFileInput.click()"
+        >
+          ここにドロップ
+        </div>
+
+        <table class="data-viewer hidden">
+          <thead>
+            <th>ID</th>
+            <th>日時</th>
+            <th>種類</th>
+            <th>主体</th>
+            <th>対象</th>
+          </thead>
+          <tbody>
+          </tbody>
+        </table>
+
+        <input type="file" oninput="input(event)">
+      </article>
+
+      <div class="control">
+        <button type="submit">実行</button>
+      </div>
+    </form>
+
+    <p class="note">
+      本機能についてのフィードバックは
+      <a href="https://github.com/renjaku/www.renjaku.co.jp">GitHub</a>
+      または <a href="/contacts#email">お問い合わせフォーム</a>からお願いいたします。
+    </p>
+  </section>
+</main>
+<footer>
+  <small>(C) <script>document.currentScript.parentNode.append(new Date().getFullYear())</script> Renjaku Inc.</small>
+</footer>
+
+<script>
+const API_PREFIX = 'https://raw.githubusercontent.com/renjaku/opendata/wip';
+
+const dataDropbox = document.querySelector('.data-dropbox');
+const dataViewer = document.querySelector('.data-viewer');
+const dataFileInput = document.querySelector('input[type="file"]');
+
+async function input(e) {
+  if (e.target.files.length === 0) {
+    dataDropbox.classList.remove('hidden');
+    dataViewer.classList.add('hidden');
+    return;
+  }
+
+  const data = (await new FileReader().readAsJSON(e.target.files[0]))
+    .map(x => ({ ...x, date: new Date(x.date) }))
+    .toSorted((a, b) => a.date - b.date);
+
+  console.debug(JSON.stringify(data, null, 2));
+
+  const tbody = dataViewer.querySelector('tbody');
+  tbody.innerHTML = '';
+
+  for (const item of data) {
+    const tr = document.createElement('tr');
+
+    function pushCellValue() {
+      const td = document.createElement('td');
+      const vals = [];
+
+      for (const arg of arguments) {
+        const { column, default_ } = arg;
+        let val;
+
+        if (column === undefined) val = arg;
+        else val = item[column] ?? default_;
+
+        if (val === undefined) continue;
+
+        vals.push(
+          val instanceof Date ?
+            moment(val).format('YYYY/MM/DD hh:mm:ss') :
+            val
+        );
+      }
+
+      td.textContent = vals.join(', ');
+      tr.append(td);
+    }
+
+    pushCellValue({ column: 'id', default_: '未設定' });
+    pushCellValue({ column: 'date' });
+
+    const typeReprMap = {
+      'adjust-income-tax': '所得税の調整',
+      'join-user': '従業員の入社',
+      'update-user': '従業員情報の更新',
+      'approve-reimbursable-expenses': '立替経費の承認',
+      'create-reimbursable-expenses': '立替経費の発生',
+      'register-social-insurance': '社会保険の加入',
+      'reimburse-expenses': '立替経費の精算'
+    };
+
+    switch (item.type) {
+      case 'adjust-income-tax':
+      case 'create-reimbursable-expenses':
+      case 'join-user':
+      case 'update-user':
+        pushCellValue(typeReprMap[item.type]);
+        pushCellValue({ column: 'username' });
+        pushCellValue('主体と同じ');
+        break;
+      case 'approve-reimbursable-expenses':
+      case 'reimburse-expenses':
+        pushCellValue(typeReprMap[item.type]);
+        pushCellValue({ column: 'username' });
+        pushCellValue({ column: 'target' });
+        break;
+      case 'register-social-insurance':
+        pushCellValue(typeReprMap[item.type]);
+        pushCellValue('自社');
+        pushCellValue(Nenkin.SUBJECT, { column: 'health' });
+        break;
+    }
+
+    tbody.append(tr);
+  }
+
+  dataDropbox.classList.add('hidden');
+  dataViewer.classList.remove('hidden');
+}
+
+function dragenter(e) {
+  e.stopPropagation();
+  e.preventDefault();
+}
+
+function dragover(e) {
+  e.stopPropagation();
+  e.preventDefault();
+}
+
+function drop(e) {
+  e.stopPropagation();
+  e.preventDefault();
+
+  const dt = e.dataTransfer;
+  const files = dt.files;
+  dataFileInput.files = files;
+}
+
+// FIXME YYYY-MM-DD のみ対応
+Date.prototype.format = function(format) {
+  const yyyy = this.getFullYear();
+  const MM = String(this.getMonth() + 1).padStart(2, '0'); // 月は0から始まるので1を足す
+
+  if (format === 'YYYY-MM-DD') {
+    const dd = String(this.getDate()).padStart(2, '0');
+    return `${yyyy}-${MM}-${dd}`;
+  } else if (format.startsWith('YYYY-MM-')) {
+    // 'YYYY-MM-XX' 形式の場合、XX部分をそのまま使用
+    return `${yyyy}-${MM}-${format.slice(-2)}`;
+  } else {
+    // 他のフォーマットが指定された場合、エラーを投げるか、単に未対応を示す
+    throw new Error("Unsupported format. Only 'YYYY-MM-DD' and 'YYYY-MM-XX' are supported.");
+  }
+};
+
+function download(content, { type, name, encoding } = {}) {
+  if (
+    typeof content === 'string' &&
+    encoding !== undefined &&
+    encoding.toLowerCase().replace('-', '') !== 'utf8'
+  ) {
+    const unicodeArray = Encoding.stringToCode(content);
+    const encodedArray = Encoding.convert(unicodeArray, {
+      to: encoding,
+      from: 'UNICODE'
+    });
+    content = new Uint8Array(encodedArray);
+  }
+
+  const blob = content instanceof Blob ?
+    content :
+    new Blob([content], { type });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = name;
+  a.click();
+}
+
+FileReader.prototype.readAsJSON = function(file) {
+  return new Promise((resolve, reject) => {
+    this.onload = e => resolve(jsyaml.load(e.target.result));
+    this.onerror = reject;
+    this.readAsText(file);
+  });
+}
+
+class Database {
+  cache = {};
+
+  async getTable(date) {
+    return this.cache[date] ??= await this.fetchTable(date);
+  }
+}
+
+class Nenkin extends Database {
+  static SUBJECT = 'nenkin.go.jp';
+  apiPrefix = `${API_PREFIX}/${Nenkin.SUBJECT}`;
+
+  async fetchTable(date) {
+    this.refs ??=
+      await (await window.fetch(`${this.apiPrefix}/refs.json`)).json();
+
+    const ref = this.refs[date.format('YYYY-MM-01')];
+    const resp = await window.fetch(`${this.apiPrefix}/${ref}.json`);
+    const table = await resp.json();
+
+    let nFound = 0;
+
+    for (const item of table) {
+      for (const key of ['報酬月額_以上', '報酬月額_未満']) {
+        item[key] ??=
+          [Number.NEGATIVE_INFINITY, Number.POSITIVE_INFINITY][nFound++];
+      }
+    }
+
+    return table;
+  }
+}
+
+class KenkoHoken extends Database {
+  constructor(subject) {
+    super();
+    this.subject = subject;
+    this.apiPrefix = `${API_PREFIX}/${this.subject}`;
+  }
+
+  async fetchTable(date) {
+    this.refs ??=
+      await (await window.fetch(`${this.apiPrefix}/refs.json`)).json();
+
+    const ref = this.refs[date.format('YYYY-MM-01')];
+    const resp = await window.fetch(`${this.apiPrefix}/${ref}.json`);
+    const table = await resp.json();
+
+    let nFound = 0;
+
+    for (const item of table) {
+      for (const key of ['報酬月額_以上', '報酬月額_未満']) {
+        item[key] ??=
+          [Number.NEGATIVE_INFINITY, Number.POSITIVE_INFINITY][nFound++];
+      }
+    }
+
+    return table;
+  }
+}
+
+class WithholdingIncomeTax extends Database {
+  async fetchTable(date) {
+    const apiPrefix = `${API_PREFIX}/nta.go.jp/income/monthly`;
+    this.refs ??= await (await window.fetch(`${apiPrefix}/refs.json`)).json();
+
+    const ref = this.refs[date.format('YYYY-MM-01')];
+    const resp = await window.fetch(`${apiPrefix}/${ref}.json`);
+    return await resp.json();
+  }
+}
+
+function* datePairByRangeFrequencyMonth(s, e) {
+  s = new Date(s);  // copy
+  e ??= new Date();
+
+  while (s <= e) {
+    const nextMonthMillis = new Date(s).setMonth(s.getMonth() + 1);
+    yield [s, new Date(nextMonthMillis - 1)];
+    s = new Date(nextMonthMillis);
+  }
+}
+
+class Sequential {
+  values = [];
+
+  [Symbol.iterator]() {
+    return this.values[Symbol.iterator]();
+  }
+
+  filter() {
+    return this.values.filter(...arguments);
+  }
+
+  map() {
+    return this.values.map(...arguments);
+  }
+
+  push() {
+    return this.values.push(...arguments);
+  }
+}
+
+class Payrolls extends Sequential {
+  toCSV() {
+    return [
+      [
+        '名前',
+        '支払日',
+        '自',
+        '至',
+        '役員報酬/基本給',
+        '課税支給額',
+        '支給額合計',
+        '健康保険料',
+        '厚生年金保険料',
+        '所得税',
+        '所得税還付残高',
+        '所得税還付後',
+        '振込支給額'
+      ].join(','),
+      ...this.map(x =>
+        [
+          x.name,
+          x.paymentDate.format('YYYY-MM-DD'),
+          x.start.format('YYYY-MM-DD'),
+          x.end.format('YYYY-MM-DD'),
+          x.salary,
+          x.taxablePayment,
+          x.totalPayment,
+          x.kenkoHokenDeduction,
+          x.nenkinDeduction,
+          x.withholdingIncomeTaxAmount,
+          x.withholdingIncomeTaxRefundBalance,
+          x.withholdingIncomeTaxAdjustedAmount,
+          x.netPayment
+        ].join(',')
+      )
+    ].join('\n');
+  }
+}
+
+class WithholdingIncomeTaxes extends Sequential {
+  toCSV() {
+    return [
+      [
+        '支払年月日',
+        '人員',
+        '支給額',
+        '税額',
+        '不足税額',  // 納付書では、超過税額の上位に位置する
+        '超過税額',
+        '不足税額残高',
+        '超過税額残高'
+      ].join(','),
+      ...this.map(x =>
+        [
+          x.paymentDate.format('YYYY-MM-DD'),
+          x.nUsers,
+          x.payment,
+          x.amount,
+          x.deficiency,
+          x.excess,
+          x.deficiencyBalance,
+          x.excessBalance
+        ].join(',')
+      )
+    ].join('\n');
+  }
+}
+
+class Result {
+  payrolls = new Payrolls();
+  withholdingIncomeTaxes = new WithholdingIncomeTaxes();
+}
+
+async function execute(form) {
+  const file = dataFileInput.files[0];
+  const data = (await new FileReader().readAsJSON(file))
+    .map(x => ({ ...x, date: new Date(x.date) }))
+    .toSorted((a, b) => a.date - b.date);
+
+  const origin = data
+    .find(({ type }) => ['join-user'].includes(type));
+
+  const since = new Date(
+    origin.date.getFullYear(),
+    origin.date.getMonth(),
+    1
+  );
+
+  const nenkin = new Nenkin();
+  const withholdingIncomeTax = new WithholdingIncomeTax();
+  let kenkoHoken;
+
+  const corp = {};
+  const users = {};
+  const prevPaid = {};
+  const tracedPaid = {};
+
+  const result = new Result();
+
+  for (
+    const [startOfMonth, endOfMonth] of datePairByRangeFrequencyMonth(since)
+  ) {
+    // TODO ここの都度検索は非効率なのでちゃんとする
+    const monthData =
+      data.filter(({ date }) => startOfMonth <= date && date <= endOfMonth);
+
+    for (
+      const { type, date, health } of monthData.filter(
+        ({ type }) => ['register-social-insurance'].includes(type)
+      )
+    ) {
+      corp.shakaiHokenRegistered = true;
+      corp.healthInsurance = health ?? corp.healthInsurance;
+    }
+
+    for (
+      const item of monthData.filter(
+        ({ type }) => ['join-user', 'update-user'].includes(type)
+      )
+    ) {
+      // 現状 username が変わる可能性は考慮していない
+      const user = users[item.username] ??= {};
+      user.name = item.name ?? user.name;
+      user.nameJa = item.nameJa ?? user.nameJa;
+      user.zone = item.zone ?? user.zone;
+      user.address = item.address ?? user.address;
+      user.dependents = item.dependents ?? user.dependents;
+      user.salary = item.salary ?? user.salary;
+      tracedPaid[item.username] ??= [];
+    }
+
+    for (
+      const { type, date, username, refund } of monthData.filter(
+        ({ type }) => ['adjust-income-tax'].includes(type)
+      )
+    ) {
+      // 現状 username が変わる可能性は考慮していない
+      const user = users[username] ??= {};
+      user.withholdingIncomeTaxRefundBalance =
+        (user.withholdingIncomeTaxRefundBalance ?? 0) + refund;
+    }
+
+    // FIXME 支払日は翌月初日で固定されてしまっている
+    const paymentDate = new Date(startOfMonth);
+    paymentDate.setMonth(startOfMonth.getMonth() + 1);
+    paymentDate.setHours(0);
+    paymentDate.setMinutes(0);
+    paymentDate.setSeconds(0);
+    paymentDate.setMilliseconds(0);
+    paymentDate.setDate(1);
+
+    const withholdingIncomeTaxTable =
+      await withholdingIncomeTax.getTable(paymentDate);
+
+    for (const [username, user] of Object.entries(users)) {
+      const taxablePayment = user.salary;  // FIXME 本来は時間外手当なども含まれる
+      const totalPayment = taxablePayment;  // FIXME 本来は非課税通勤費なども含まれる
+
+      let nenkinDeduction = 0;
+      let kenkoHokenDeduction = 0;
+
+      if (corp.shakaiHokenRegistered) {
+        if (
+          kenkoHoken === undefined ||
+          kenkoHoken.subject !== corp.healthInsurance
+        ) {
+          kenkoHoken = new KenkoHoken(corp.healthInsurance);
+        }
+
+        const nenkinTable = await nenkin.getTable(paymentDate);
+        const kenkoHokenTable = await kenkoHoken.getTable(paymentDate);
+
+        if (user.currentNenkin === undefined) {
+          user.currentNenkin = nenkinTable.find(x =>
+            x.報酬月額_以上 <= totalPayment && totalPayment < x.報酬月額_未満);
+        }
+
+        if (user.currentKenkoHoken === undefined) {
+          user.currentKenkoHoken = kenkoHokenTable.find(x =>
+            x.報酬月額_以上 <= totalPayment && totalPayment < x.報酬月額_未満);
+        }
+
+        // 今月、表に更新があった場合、同じ等級の値に更新 (定時決定)
+        user.currentNenkin =
+          nenkinTable.find(
+            x =>
+              x.標準報酬_等級 === user.currentNenkin.標準報酬_等級 &&
+              JSON.stringify(x) !== JSON.stringify(user.currentNenkin)
+          ) ??
+          user.currentNenkin;
+
+        user.currentKenkoHoken =
+          kenkoHokenTable.find(
+            x =>
+              x.標準報酬_等級 === user.currentKenkoHoken.標準報酬_等級 &&
+              JSON.stringify(x) !== JSON.stringify(user.currentKenkoHoken)
+          ) ??
+          user.currentKenkoHoken;
+
+        // 随時改定
+        if (tracedPaid[username].length === 3) {
+          const avgPaidPay =
+            tracedPaid[username]
+              .reduce((acc, { totalPayment }) => acc + totalPayment, 0) /
+            tracedPaid[username].length;
+
+          const nenkinAvg = nenkinTable.find(x =>
+            x.報酬月額_以上 <= avgPaidPay && avgPaidPay < x.報酬月額_未満);
+
+          const nenkinLevelDiff =
+            Math.abs(nenkinAvg.標準報酬_等級 - user.currentNenkin.標準報酬_等級);
+
+          if (nenkinLevelDiff >= 2) {
+            user.currentNenkin = nenkinTable.find(x =>
+              x.報酬月額_以上 <= totalPayment && totalPayment < x.報酬月額_未満);
+          }
+
+          const kenkoHokenAvg = kenkoHokenTable.find(x =>
+            x.報酬月額_以上 <= avgPaidPay && avgPaidPay < x.報酬月額_未満);
+
+          const kenkoHokenLevelDiff =
+            Math.abs(kenkoHokenAvg.標準報酬_等級 - user.currentKenkoHoken.標準報酬_等級);
+
+          if (kenkoHokenLevelDiff >= 2) {
+            user.currentKenkoHoken = kenkoHokenTable.find(x =>
+              x.報酬月額_以上 <= totalPayment && totalPayment < x.報酬月額_未満);
+          }
+
+          tracedPaid[username] = [];
+        }
+
+        nenkinDeduction = user.currentNenkin.控除額;
+        kenkoHokenDeduction = user.currentKenkoHoken.介護保険の被保険者でない場合_控除額;
+      }
+
+      const taxBase = totalPayment - nenkinDeduction - kenkoHokenDeduction;
+      const withholdingIncomeTax = withholdingIncomeTaxTable
+        .find(({ start, end }) => start <= taxBase && taxBase < end);
+      const withholdingIncomeTaxAmount =
+        withholdingIncomeTax.dependents[user.dependents] ??
+        withholdingIncomeTax.default;
+
+      const withholdingIncomeTaxRefundBalance =
+        user.withholdingIncomeTaxRefundBalance ?? 0;
+      const withholdingIncomeTaxAdjustedAmount = Math.max(
+        withholdingIncomeTaxAmount - withholdingIncomeTaxRefundBalance,
+        0
+      );
+
+      if (user.withholdingIncomeTaxRefundBalance) {
+        // 相殺後残高を設定
+        user.withholdingIncomeTaxRefundBalance = Math.max(
+          withholdingIncomeTaxRefundBalance - withholdingIncomeTaxAmount,
+          0
+        );
+      }
+
+      const payroll = {
+        username,
+        name: user.nameJa,
+        paymentDate,
+        start: startOfMonth,
+        end: endOfMonth,
+        salary: user.salary,
+        taxablePayment,
+        totalPayment,
+        nenkinDeduction,
+        kenkoHokenDeduction,
+        withholdingIncomeTaxAmount,
+        withholdingIncomeTaxRefundBalance,
+        withholdingIncomeTaxAdjustedAmount,
+        netPayment: taxBase - withholdingIncomeTaxAdjustedAmount
+      };
+
+      if (
+        tracedPaid[username].length !== 0 ||
+        payroll.taxablePayment !== prevPaid[username]?.taxablePayment
+      ) {
+        tracedPaid[username].push(payroll);  // 追跡中の過去分としてストック
+      }
+
+      console.debug(
+        ...Object.keys(payroll)
+          .map(k => payroll[k] instanceof Date ?
+            payroll[k].format('YYYY-MM-DD') :
+            payroll[k]
+          )
+      );
+
+      // 結果に追加
+      result.payrolls.push(payroll);
+
+      // 翌月参照するため今月分を保持
+      prevPaid[username] = payroll;
+    }
+  }
+
+  // 源泉所得税の納付書を作成
+  // (給与明細作成との処理の分離を考慮し、あえてこのタイミングで作成している)
+  const paymentDates =
+    new Set(result.payrolls.map(({ paymentDate }) => paymentDate));
+
+  for (const paymentDate of paymentDates) {
+    // TODO ここの都度検索は非効率なのでちゃんとする
+    const payrolls = result.payrolls.filter(x =>
+      paymentDate.format('YYYY-MM-DD') === x.paymentDate.format('YYYY-MM-DD'));
+
+    // 今月分の納付額を算出
+    const wit = {
+      paymentDate,
+      payment: 0,
+      amount: 0,
+      excess: 0,
+      excessBalance: 0,
+      deficiency: 0,
+      deficiencyBalance: 0
+    };
+    const usernames = new Set();
+
+    for (const payroll of payrolls) {
+      wit.payment += payroll.taxablePayment;
+      wit.amount += payroll.withholdingIncomeTaxAmount;
+
+      const refund = payroll.withholdingIncomeTaxAmount -
+        payroll.withholdingIncomeTaxAdjustedAmount;
+
+      if (refund > 0) {
+        wit.excess += refund;  // 超過税額 (還付した全額)
+        wit.excessBalance +=
+          payroll.withholdingIncomeTaxRefundBalance - refund;
+      } else {
+        wit.deficiency += -refund;  // 不足税額 (追加で徴収した全額)
+        wit.deficiencyBalance +=
+          payroll.withholdingIncomeTaxRefundBalance - refund;
+      }
+
+      usernames.add(payroll.username);
+    }
+
+    wit.nUsers = usernames.size;
+    result.withholdingIncomeTaxes.push(wit);
+  }
+
+  download(result.payrolls.toCSV(),
+    { type: 'text/csv', name: '給与明細.csv', encoding: 'sjis' });
+
+  download(result.withholdingIncomeTaxes.toCSV(),
+    { type: 'text/csv', name: '源泉徴収.csv', encoding: 'sjis' });
+}
+</script>
+</body>
+</html>

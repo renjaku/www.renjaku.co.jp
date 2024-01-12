@@ -26,6 +26,12 @@ dd :is(ul, ol) {
   margin: 0;
 }
 
+.note {
+  padding: .5em;
+  color: orange;
+  border-radius: .2em;
+}
+
 @media screen and (min-width: 1024px) {
   dd {
     margin-left: 1em;
