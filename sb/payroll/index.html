@@ -313,21 +313,8 @@ function drop(e) {
   dataFileInput.files = files;
 }
 
-// FIXME YYYY-MM-DD のみ対応
 Date.prototype.format = function(format) {
-  const yyyy = this.getFullYear();
-  const MM = String(this.getMonth() + 1).padStart(2, '0'); // 月は0から始まるので1を足す
-
-  if (format === 'YYYY-MM-DD') {
-    const dd = String(this.getDate()).padStart(2, '0');
-    return `${yyyy}-${MM}-${dd}`;
-  } else if (format.startsWith('YYYY-MM-')) {
-    // 'YYYY-MM-XX' 形式の場合、XX部分をそのまま使用
-    return `${yyyy}-${MM}-${format.slice(-2)}`;
-  } else {
-    // 他のフォーマットが指定された場合、エラーを投げるか、単に未対応を示す
-    throw new Error("Unsupported format. Only 'YYYY-MM-DD' and 'YYYY-MM-XX' are supported.");
-  }
+  return moment(this).format(format);
 };
 
 function download(content, { type, name, encoding } = {}) {
