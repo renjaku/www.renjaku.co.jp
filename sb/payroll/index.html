@@ -96,6 +96,16 @@ table.data-viewer {
   }
 }
 
+.misc {
+  display: flex;
+  gap: 1em;
+  flex-wrap: wrap;
+
+  article {
+    width: 8em;
+  }
+}
+
 .control {
   button[type="submit"] {
     padding: 0 1em;
@@ -186,6 +196,25 @@ table.data-viewer {
         <input type="file" oninput="input(event)">
       </article>
 
+      <div class="misc">
+        <article>
+          <h1>締め日</h1>
+          <select name="closingDay">
+            <option value="endOfMonth" selected>毎月末日</option>
+          </select>
+        </article>
+
+        <article>
+          <h1>支払日</h1>
+          <select name="paymentDay" onchange="changePaymentDay()">
+            <option value="" selected>入力した日</option>
+            <option value="endOfMonth">毎月末日</option>
+          </select>
+          <input type="number" value="1" min="1" max="28"
+            onchange="changePaymentDay()">
+        </article>
+      </div>
+
       <div class="control">
         <button type="submit">実行</button>
       </div>
@@ -208,15 +237,29 @@ const API_PREFIX = 'https://raw.githubusercontent.com/renjaku/opendata/wip';
 const dataDropbox = document.querySelector('.data-dropbox');
 const dataViewer = document.querySelector('.data-viewer');
 const dataFileInput = document.querySelector('input[type="file"]');
+const paymentDaySelect = document.querySelector('select[name="paymentDay"]');
+const paymentDayInput = paymentDaySelect.nextElementSibling;
 
-async function input(e) {
-  if (e.target.files.length === 0) {
+let paymentDay;
+
+function changePaymentDay() {
+  const selectedPaymentDay = paymentDaySelect.selectedOptions[0].value;
+  paymentDayInput.disabled = selectedPaymentDay === 'endOfMonth';
+  paymentDay = paymentDayInput.disabled ?
+    selectedPaymentDay :
+    Number.parseInt(paymentDayInput.value);
+}
+
+changePaymentDay();
+
+async function input({ target }) {
+  if (target.files.length === 0) {
     dataDropbox.classList.remove('hidden');
     dataViewer.classList.add('hidden');
     return;
   }
 
-  const data = (await new FileReader().readAsJSON(e.target.files[0]))
+  const data = (await new FileReader().readAsJSON(target.files[0]))
     .map(x => ({ ...x, date: new Date(x.date) }))
     .toSorted((a, b) => a.date - b.date);
 
@@ -593,14 +636,11 @@ async function execute(form) {
         (user.withholdingIncomeTaxRefundBalance ?? 0) + refund;
     }
 
-    // FIXME 支払日は翌月初日で固定されてしまっている
-    const paymentDate = new Date(startOfMonth);
-    paymentDate.setMonth(startOfMonth.getMonth() + 1);
-    paymentDate.setHours(0);
-    paymentDate.setMinutes(0);
-    paymentDate.setSeconds(0);
-    paymentDate.setMilliseconds(0);
-    paymentDate.setDate(1);
+    // 支払日を設定
+    const nextMonth = moment(startOfMonth).add(1, 'months');
+    const paymentDate = paymentDay === 'endOfMonth' ?
+      nextMonth.endOf('month') :
+      nextMonth.set('date', paymentDay);
 
     const withholdingIncomeTaxTable =
       await withholdingIncomeTax.getTable(paymentDate);
