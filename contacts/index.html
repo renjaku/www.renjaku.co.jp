@@ -65,7 +65,7 @@ function send() {
 
   if (
     !emailValue &&
-    !window.confirm('弊社からの返信を受け取るためのメールアドレスが入力されていませんが、よろしいですか？')
+    !window.confirm('弊社からの返信を受け取るメールアドレスが入力されていませんが、よろしいですか？')
   ) return;
 
   let req = new XMLHttpRequest();
@@ -110,12 +110,11 @@ Reply-To: ${emailValue}
 <main>
   <section>
     <h1>contacts</h1>
-    <article>
-      <h1 id="email">email</h1>
-      <input type="text" placeholder="your@email.address">
-      <textarea placeholder="Please enter your message."></textarea>
-      <button onclick="send()">send</button>
-    </article>
+    <form onsubmit="send(); return false">
+      <input type="text" placeholder="弊社からの返信を受け取るメールアドレス">
+      <textarea placeholder="メッセージをここに入力してください。"></textarea>
+      <button>送信</button>
+    </form>
   </section>
 </main>
 <footer>
