@@ -14,12 +14,8 @@
   }
 }
 
-footer {
-  margin-top: 2em;
-}
-
 section {
-  margin-top: 3em;
+  margin: 3em 0;
 }
 
 dt {
