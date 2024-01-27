@@ -505,6 +505,7 @@ class Payrolls extends Sequential {
         '役員報酬/基本給',
         '課税支給額',
         '支給額合計',
+        '社会保険報酬月額',
         '健康保険料',
         '厚生年金保険料',
         '所得税',
@@ -521,6 +522,7 @@ class Payrolls extends Sequential {
           x.salary,
           x.taxablePayment,
           x.totalPayment,
+          x.socialInsuranceMonthlyRemuneration,
           x.healthInsuranceDeduction,
           x.pensionInsuranceDeduction,
           x.withholdingIncomeTaxAmount,
@@ -647,7 +649,8 @@ async function execute(form) {
 
     for (const [username, user] of Object.entries(users)) {
       const taxablePayment = user.salary;  // FIXME 本来は時間外手当なども含まれる
-      const totalPayment = taxablePayment;  // FIXME 本来は非課税通勤費なども含まれる
+      const siCalcTarget = taxablePayment;  // FIXME さらに非課税通勤費が含まれる
+      const totalPayment = siCalcTarget;  // FIXME さらに立替経費が含まれる
 
       let pensionInsuranceDeduction = 0;
       let healthInsuranceDeduction = 0;
@@ -665,12 +668,12 @@ async function execute(form) {
 
         if (user.currentPensionInsurance === undefined) {
           user.currentPensionInsurance = pensionInsuranceTable.find(x =>
-            x.報酬月額_以上 <= totalPayment && totalPayment < x.報酬月額_未満);
+            x.報酬月額_以上 <= siCalcTarget && siCalcTarget < x.報酬月額_未満);
         }
 
         if (user.currentHealthInsurance === undefined) {
           user.currentHealthInsurance = healthInsuranceTable.find(x =>
-            x.報酬月額_以上 <= totalPayment && totalPayment < x.報酬月額_未満);
+            x.報酬月額_以上 <= siCalcTarget && siCalcTarget < x.報酬月額_未満);
         }
 
         // 今月、表に更新があった場合、同じ等級の値に更新 (定時決定)
@@ -692,10 +695,10 @@ async function execute(form) {
 
         // 随時改定
         if (tracedPaid[username].length === 3) {
-          const avgPaidPay =
-            tracedPaid[username]
-              .reduce((acc, { totalPayment }) => acc + totalPayment, 0) /
-            tracedPaid[username].length;
+          const sumPaidPay = tracedPaid[username].reduce(
+            (acc, x) => acc + x.socialInsuranceMonthlyRemuneration, 0
+          );
+          const avgPaidPay = sumPaidPay / tracedPaid[username].length;
 
           const pensionInsuranceAvg = pensionInsuranceTable.find(x =>
             x.報酬月額_以上 <= avgPaidPay && avgPaidPay < x.報酬月額_未満);
@@ -705,7 +708,7 @@ async function execute(form) {
 
           if (pensionInsuranceLevelDiff >= 2) {
             user.currentPensionInsurance = pensionInsuranceTable.find(x =>
-              x.報酬月額_以上 <= totalPayment && totalPayment < x.報酬月額_未満);
+              x.報酬月額_以上 <= siCalcTarget && siCalcTarget < x.報酬月額_未満);
           }
 
           const healthInsuranceAvg = healthInsuranceTable.find(x =>
@@ -716,7 +719,7 @@ async function execute(form) {
 
           if (healthInsuranceLevelDiff >= 2) {
             user.currentHealthInsurance = healthInsuranceTable.find(x =>
-              x.報酬月額_以上 <= totalPayment && totalPayment < x.報酬月額_未満);
+              x.報酬月額_以上 <= siCalcTarget && siCalcTarget < x.報酬月額_未満);
           }
 
           tracedPaid[username] = [];
@@ -726,7 +729,7 @@ async function execute(form) {
         healthInsuranceDeduction = user.currentHealthInsurance.介護保険の被保険者でない場合_控除額;
       }
 
-      const taxBase = totalPayment - pensionInsuranceDeduction - healthInsuranceDeduction;
+      const taxBase = taxablePayment - pensionInsuranceDeduction - healthInsuranceDeduction;
       const withholdingIncomeTax = withholdingIncomeTaxTable
         .find(({ start, end }) => start <= taxBase && taxBase < end);
       const withholdingIncomeTaxAmount =
@@ -757,6 +760,7 @@ async function execute(form) {
         salary: user.salary,
         taxablePayment,
         totalPayment,
+        socialInsuranceMonthlyRemuneration: siCalcTarget,
         pensionInsuranceDeduction,
         healthInsuranceDeduction,
         withholdingIncomeTaxAmount,
