@@ -503,6 +503,7 @@ class Payrolls extends Sequential {
         '自',
         '至',
         '役員報酬/基本給',
+        '立替経費',
         '課税支給額',
         '支給額合計',
         '社会保険報酬月額',
@@ -520,6 +521,7 @@ class Payrolls extends Sequential {
           x.start.format('YYYY-MM-DD'),
           x.end.format('YYYY-MM-DD'),
           x.salary,
+          x.reimbursedExpenses,
           x.taxablePayment,
           x.totalPayment,
           x.socialInsuranceMonthlyRemuneration,
@@ -593,6 +595,11 @@ async function execute(form) {
   const prevPaid = {};
   const tracedPaid = {};
 
+  const idIndex = data.reduce((acc, x) => {
+    if (x.id) acc[x.id] = x;
+    return acc;
+  }, {});
+
   const result = new Result();
 
   for (
@@ -638,6 +645,18 @@ async function execute(form) {
         (user.withholdingIncomeTaxRefundBalance ?? 0) + refund;
     }
 
+    const userExpenses = {};
+
+    for (
+      const item of monthData.filter(
+        ({ type }) => ['reimburse-expenses'].includes(type)
+      )
+    ) {
+      if (!idIndex[item.target]) continue;
+      const { username, amount } = idIndex[item.target];
+      userExpenses[username] = (userExpenses[username] ?? 0) + amount;
+    }
+
     // 支払日を設定
     const nextMonth = moment(startOfMonth).add(1, 'months');
     const paymentDate = paymentDay === 'endOfMonth' ?
@@ -650,7 +669,9 @@ async function execute(form) {
     for (const [username, user] of Object.entries(users)) {
       const taxablePayment = user.salary;  // FIXME 本来は時間外手当なども含まれる
       const siCalcTarget = taxablePayment;  // FIXME さらに非課税通勤費が含まれる
-      const totalPayment = siCalcTarget;  // FIXME さらに立替経費が含まれる
+
+      const reimbursedExpenses = userExpenses[username] ?? 0;  // 立替経費
+      const totalPayment = siCalcTarget + reimbursedExpenses;
 
       let pensionInsuranceDeduction = 0;
       let healthInsuranceDeduction = 0;
@@ -758,6 +779,7 @@ async function execute(form) {
         start: startOfMonth,
         end: endOfMonth,
         salary: user.salary,
+        reimbursedExpenses,
         taxablePayment,
         totalPayment,
         socialInsuranceMonthlyRemuneration: siCalcTarget,
@@ -766,7 +788,8 @@ async function execute(form) {
         withholdingIncomeTaxAmount,
         withholdingIncomeTaxRefundBalance,
         withholdingIncomeTaxAdjustedAmount,
-        netPayment: taxBase - withholdingIncomeTaxAdjustedAmount
+        netPayment: totalPayment - pensionInsuranceDeduction -
+          healthInsuranceDeduction - withholdingIncomeTaxAdjustedAmount
       };
 
       if (

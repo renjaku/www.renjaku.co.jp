@@ -1,25 +1,58 @@
 - type: join-user
   date: 2023-01-04T11:00:00+09:00
-  username: taro.yamada@example.com
-  name: Taro Yamada
-  nameJa: 山田 太郎
+  username: taro.tanaka@example.com
+  name: Taro Tanaka
+  nameJa: 田中 太郎
   zone: 1000001
   address: 東京都千代田区千代田1番1号
   board: true
   salary: 200000
-  note: salary was decided at 定時株主総会 on 2023-01-04T11:00:00+09:00
+  note: 定時株主総会 (2023-01-04T11:00:00+09:00) にて、役員報酬が決定。
 
 - type: register-social-insurance
   date: 2023-01-04T00:00:00+09:00
   health: kyoukaikenpo.or.jp/tokyo  # ref: https://github.com/renjaku/opendata
+  note: 健康保険 (協会けんぽ東京支部) と厚生年金保険の新規適用。
 
 - type: update-user
   date: 2023-04-01T00:00:00+09:00
-  username: taro.yamada@example.com
+  username: taro.tanaka@example.com
   dependents: 0
+  note: 「給与所得者の扶養控除等申告書」を提出した。
 
 - type: update-user
   date: 2024-01-04T11:00:00+09:00
-  username: taro.yamada@example.com
+  username: taro.tanaka@example.com
   salary: 300000
-  note: salary was decided at 定時株主総会 on 2024-01-04T11:00:00+09:00
+  note: 定時株主総会 (2024-01-04T11:00:00+09:00) にて、役員報酬が変動。
+
+- type: join-user
+  date: 2024-01-04T11:00:00+09:00
+  username: hanako.yamada@example.com
+  name: Hanako Yamada
+  nameJa: 山田 花子
+  zone: 1000001
+  address: 東京都千代田区千代田1番2号
+  board: false
+  salary: 200000
+  dependents: 0
+  note: 新入社員を登録。
+
+- id: reimbursable-expenses:2024-01-15-12-00-00:hanako.yamada@example.com
+  type: create-reimbursable-expenses
+  date: 2024-01-15T12:00:00+09:00
+  username: hanako.yamada@example.com
+  amount: 1000
+  note: 会議の費用を 2024-01-15T10:00:00+09:00 に立て替えた。
+
+- type: approve-reimbursable-expenses
+  date: 2024-01-15T15:00:00+09:00
+  username: taro.tanaka@example.com
+  target: reimbursable-expenses:2024-01-15-12-00-00:hanako.yamada@example.com
+  note: 経費精算を承認した。
+
+- type: reimburse-expenses
+  date: 2024-01-31T10:00:00+09:00
+  username: taro.tanaka@example.com
+  target: reimbursable-expenses:2024-01-15-12-00-00:hanako.yamada@example.com
+  note: 経費精算を実施した。
