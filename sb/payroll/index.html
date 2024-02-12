@@ -193,7 +193,7 @@ table.data-viewer {
           </tbody>
         </table>
 
-        <input type="file" oninput="input(event)">
+        <input type="file" oninput="input(event.target.files)">
       </article>
 
       <div class="misc">
@@ -252,14 +252,14 @@ function changePaymentDay() {
 
 changePaymentDay();
 
-async function input({ target }) {
-  if (target.files.length === 0) {
+async function input(files) {
+  if (files.length === 0) {
     dataDropbox.classList.remove('hidden');
     dataViewer.classList.add('hidden');
     return;
   }
 
-  const data = (await new FileReader().readAsJSON(target.files[0]))
+  const data = (await new FileReader().readAsJSON(files[0]))
     .map(x => ({ ...x, date: new Date(x.date) }))
     .toSorted((a, b) => a.date - b.date);
 
@@ -351,9 +351,8 @@ function drop(e) {
   e.stopPropagation();
   e.preventDefault();
 
-  const dt = e.dataTransfer;
-  const files = dt.files;
-  dataFileInput.files = files;
+  dataFileInput.files = e.dataTransfer.files;
+  input(dataFileInput.files);
 }
 
 Date.prototype.format = function(format) {
