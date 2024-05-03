@@ -260,7 +260,7 @@ async function input(files) {
   }
 
   const data = (await new FileReader().readAsJSON(files[0]))
-    .map(x => ({ ...x, date: new Date(x.date) }))
+    .map(x => ({ ...x, date: moment(x.date) }))
     .toSorted((a, b) => a.date - b.date);
 
   console.debug(JSON.stringify(data, null, 2));
@@ -285,8 +285,8 @@ async function input(files) {
         if (val === undefined) continue;
 
         vals.push(
-          val instanceof Date ?
-            moment(val).format('YYYY/MM/DD HH:mm:ss') :
+          val instanceof moment ?
+            val.format('YYYY/MM/DD HH:mm:ss') :
             val
         );
       }
@@ -354,10 +354,6 @@ function drop(e) {
   dataFileInput.files = e.dataTransfer.files;
   input(dataFileInput.files);
 }
-
-Date.prototype.format = function(format) {
-  return moment(this).format(format);
-};
 
 function download(content, { type, name, encoding } = {}) {
   if (
@@ -463,13 +459,12 @@ class WithholdingIncomeTax extends Database {
 }
 
 function* datePairByRangeFrequencyMonth(s, e) {
-  s = new Date(s);  // copy
-  e ??= new Date();
+  s = moment(s);  // copy
+  e ??= moment();
 
   while (s <= e) {
-    const nextMonthMillis = new Date(s).setMonth(s.getMonth() + 1);
-    yield [s, new Date(nextMonthMillis - 1)];
-    s = new Date(nextMonthMillis);
+    yield [s.clone(), s.clone().endOf('months')];
+    s.add(1, 'months').startOf('months');
   }
 }
 
@@ -591,8 +586,7 @@ async function execute(form) {
 
   const corp = {};
   const users = {};
-  const prevPaid = {};
-  const tracedPaid = {};
+  const states = {};
 
   const idIndex = data.reduce((acc, x) => {
     if (x.id) acc[x.id] = x;
@@ -629,8 +623,19 @@ async function execute(form) {
       user.zone = item.zone ?? user.zone;
       user.address = item.address ?? user.address;
       user.dependents = item.dependents ?? user.dependents;
+
+      states[item.username] ??= { si: { traced: undefined } };
+      if (
+        item.type === 'update-user' &&
+        item.salary !== undefined &&
+        item.salary !== user.salary &&
+        !states[item.username].si.traced
+      ) {
+        // 記録・追跡する
+        states[item.username].si.traced = { paid: [] };
+      }
+
       user.salary = item.salary ?? user.salary;
-      tracedPaid[item.username] ??= [];
     }
 
     for (
@@ -657,7 +662,7 @@ async function execute(form) {
     }
 
     // 支払日を設定
-    const nextMonth = moment(startOfMonth).add(1, 'months');
+    const nextMonth = startOfMonth.clone().add(1, 'months');
     const paymentDate = paymentDay === 'endOfMonth' ?
       nextMonth.endOf('month') :
       nextMonth.set('date', paymentDay);
@@ -714,11 +719,11 @@ async function execute(form) {
           user.currentHealthInsurance;
 
         // 随時改定
-        if (tracedPaid[username].length === 3) {
-          const sumPaidPay = tracedPaid[username].reduce(
+        if (states[username].si.traced?.paid.length === 3) {
+          const sumPaidPay = states[username].si.traced.paid.reduce(
             (acc, x) => acc + x.socialInsuranceMonthlyRemuneration, 0
           );
-          const avgPaidPay = sumPaidPay / tracedPaid[username].length;
+          const avgPaidPay = sumPaidPay / states[username].si.traced.paid.length;
 
           const pensionInsuranceAvg = pensionInsuranceTable.find(x =>
             x.報酬月額_以上 <= avgPaidPay && avgPaidPay < x.報酬月額_未満);
@@ -736,13 +741,12 @@ async function execute(form) {
 
           const healthInsuranceLevelDiff =
             Math.abs(healthInsuranceAvg.標準報酬_等級 - user.currentHealthInsurance.標準報酬_等級);
-
           if (healthInsuranceLevelDiff >= 2) {
             user.currentHealthInsurance = healthInsuranceTable.find(x =>
               x.報酬月額_以上 <= siCalcTarget && siCalcTarget < x.報酬月額_未満);
           }
 
-          tracedPaid[username] = [];
+          states[username].si.traced = undefined;
         }
 
         pensionInsuranceDeduction = user.currentPensionInsurance.控除額;
@@ -791,16 +795,13 @@ async function execute(form) {
           healthInsuranceDeduction - withholdingIncomeTaxAdjustedAmount
       };
 
-      if (
-        tracedPaid[username].length !== 0 ||
-        payroll.taxablePayment !== prevPaid[username]?.taxablePayment
-      ) {
-        tracedPaid[username].push(payroll);  // 追跡中の過去分としてストック
+      if (states[username].si.traced) {
+        states[username].si.traced.paid.push(payroll);  // 追跡中の過去分としてストック
       }
 
       console.debug(
         ...Object.keys(payroll)
-          .map(k => payroll[k] instanceof Date ?
+          .map(k => payroll[k] instanceof moment ?
             payroll[k].format('YYYY-MM-DD') :
             payroll[k]
           )
@@ -808,9 +809,6 @@ async function execute(form) {
 
       // 結果に追加
       result.payrolls.push(payroll);
-
-      // 翌月参照するため今月分を保持
-      prevPaid[username] = payroll;
     }
   }
 
