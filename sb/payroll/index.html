@@ -305,7 +305,8 @@ async function input(files) {
       'approve-reimbursable-expenses': '立替経費の承認',
       'create-reimbursable-expenses': '立替経費の発生',
       'register-social-insurance': '社会保険の加入',
-      'reimburse-expenses': '立替経費の精算'
+      'reimburse-expenses': '立替経費の精算',
+      'resident-tax': '住民税'
     };
 
     switch (item.type) {
@@ -313,6 +314,7 @@ async function input(files) {
       case 'create-reimbursable-expenses':
       case 'join-user':
       case 'update-user':
+      case 'resident-tax':
         pushCellValue(typeReprMap[item.type]);
         pushCellValue({ column: 'username' });
         pushCellValue('主体と同じ');
@@ -506,6 +508,7 @@ class Payrolls extends Sequential {
         '所得税',
         '所得税還付残高',
         '所得税還付後',
+        '住民税',
         '振込支給額'
       ].join(','),
       ...this.map(x =>
@@ -524,6 +527,7 @@ class Payrolls extends Sequential {
           x.withholdingIncomeTaxAmount,
           x.withholdingIncomeTaxRefundBalance,
           x.withholdingIncomeTaxAdjustedAmount,
+          x.residentTaxAmount,
           x.netPayment
         ].join(',')
       )
@@ -775,6 +779,10 @@ async function execute(form) {
         );
       }
 
+      const { amount: residentTaxAmount } = monthData.findLast(
+        x => ['resident-tax'].includes(x.type) && x.username == username
+      ) ?? { amount: 0 };
+
       const payroll = {
         username,
         name: user.nameJa,
@@ -791,8 +799,10 @@ async function execute(form) {
         withholdingIncomeTaxAmount,
         withholdingIncomeTaxRefundBalance,
         withholdingIncomeTaxAdjustedAmount,
+        residentTaxAmount,
         netPayment: totalPayment - pensionInsuranceDeduction -
-          healthInsuranceDeduction - withholdingIncomeTaxAdjustedAmount
+          healthInsuranceDeduction - withholdingIncomeTaxAdjustedAmount -
+          residentTaxAmount
       };
 
       if (states[username].si.traced) {
