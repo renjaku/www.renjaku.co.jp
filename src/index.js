@@ -1,4 +1,8 @@
+window.YAML = require('yaml');
+window.moment = require('moment');
+
 if (window.location.hostname !== 'localhost') {
+  // Google Analytics
   const TARGET = 'G-NHWWDSSJ9Y';
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}

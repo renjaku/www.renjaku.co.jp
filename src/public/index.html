@@ -1,0 +1,115 @@
+{% extends "src/layouts/main.html" %}
+
+{% block head %}
+<style>
+.services {
+  .container {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    padding: 0 10%;
+
+    article {
+      display: flex;
+      flex-direction: column;
+      gap: .25em;
+      margin: 0;
+      padding: 1em;
+      width: 16em;
+      text-align: center;
+
+      > * {
+        margin: 0;
+        padding: 0;
+      }
+
+      h1 {
+        margin: 0;
+
+        &::after {
+          content: none;
+        }
+      }
+    }
+  }
+}
+
+@media screen and (min-width: 1024px) {
+  .services {
+    .container {
+      justify-content: flex-start;
+    }
+  }
+}
+
+.anim {
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 2;
+  opacity: 0;
+  transition: opacity .8s .2s cubic-bezier(0.23, 0.76, 0.37, 0.99),transform .8s .2s cubic-bezier(0.87, 0, 0.13, 1);
+  transform: translateX(-40px);
+}
+
+.anim.inviewed {
+  opacity: 1;
+  transform: translateX(0)
+}
+
+.design h1:before {
+  content: '🎨';
+  margin-right: .25em;
+}
+
+.develop h1:before {
+  content: '🛠️';
+  margin-right: .25em;
+}
+
+.payroll h1:before {
+  content: '📄';
+  margin-right: .25em;
+}
+</style>
+{% endblock %}
+
+{% block main %}
+<main>
+  <section>
+    <p>連雀株式会社では、デザインやシステム開発を承っております。</p>
+    <p>まずは<a href="/contacts">お問い合わせ</a>ください！</p>
+  </section>
+
+  <section class="services">
+    <h1>services</h1>
+    <div class="container anim">
+      <article class="design">
+        <h1>デザイン</h1>
+        <p>Web / アプリ / ロゴ / etc.</p>
+      </article>
+      <article class="develop">
+        <h1>システム開発</h1>
+        <p>Python / JavaScript / etc.</p>
+      </article>
+      <article class="payroll">
+        <h1><a href="/sb/payroll/">給与明細作成</a></h1>
+        <p>社保控除 / 源泉徴収 / etc.</p>
+      </article>
+    </div>
+  </section>
+</main>
+
+<script>
+const serviceContainer = document.querySelector('.services .container');
+
+if (window.sessionStorage.checkin) {
+  serviceContainer.classList.add('inviewed');
+} else {
+  // 謎のアニメーションを動かす
+  window.setTimeout(() => {
+    serviceContainer.classList.add('inviewed');
+    window.sessionStorage.checkin = true;
+  });
+}
+</script>
+{% endblock %}
