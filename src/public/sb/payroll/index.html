@@ -117,12 +117,24 @@ table.data-viewer {
     <h1>給与明細作成サービス</h1>
 
     <details>
-      <summary>本サービスについての補足</summary>
+      <summary>本サービスについて</summary>
       <p>
         <ul>
-          <li>入力データファイルに従い、給与計算を行うサービス</li>
-          <li>計算結果をファイル (給与明細.csv/源泉徴収.csv) にまとめて出力する</li>
-          <li>入力データファイルの内容は、弊社サーバーを含む外部サーバーに送信されない (今お使いのブラウザ内で完結する)</li>
+          <li>
+            データファイル (YAML/JSON) を基に給与計算を行い、結果をCSVファイル
+            (給与明細.csv/源泉徴収.csv) として出力します
+          </li>
+          <li>計算は全てユーザーのブラウザ内で行われ、外部サーバーへのデータ送信はありません</li>
+          <li>
+            <a href="https://github.com/renjaku/www.renjaku.co.jp/blob/main/src/public/sb/payroll/README.md">
+              マニュアルはこちら
+            </a>
+          </li>
+          <li>
+            <a href="https://chatgpt.com/g/g-88CK7SE2t-gei-yu-ming-xi-zuo-cheng-sahisuli-yong-sahoto">
+              ChatGPT によるサポートはこちら
+            </a>
+          </li>
         </ul>
       </p>
     </details>
@@ -135,9 +147,8 @@ table.data-viewer {
           <summary>データファイルとは？</summary>
           <p>
             <ul>
-              <li>給与計算のための会社情報を時系列順にまとめたもの</li>
-              <li>ファイル形式は YAML/JSON</li>
-              <li><a href="data.template.yml">サンプル</a></li>
+              <li>給与計算のための会社情報を時系列順にまとめたものです</li>
+              <li>まずは<a href="data.template.yml">サンプル</a>をダウンロードし、お使いのテキストエディタで編集します</li>
             </ul>
           </p>
         </details>
@@ -192,7 +203,7 @@ table.data-viewer {
 
     <p class="note">
       本機能のご要望・フィードバックは
-      <a href="https://github.com/renjaku/www.renjaku.co.jp">GitHub</a>
+      <a href="https://github.com/renjaku/www.renjaku.co.jp/issues">GitHub</a>
       または <a href="/contacts">お問い合わせフォーム</a>からお願いいたします。
     </p>
   </section>
