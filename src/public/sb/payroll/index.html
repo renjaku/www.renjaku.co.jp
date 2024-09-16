@@ -38,6 +38,11 @@ article {
   h1 {
     margin: 0;
   }
+
+  p {
+    margin: 0;
+    font-size: .8em;
+  }
 }
 
 .hidden {
@@ -93,7 +98,8 @@ table.data-viewer {
   flex-wrap: wrap;
 
   article {
-    width: 8em;
+    min-width: 8em;
+    max-width: 16em;
   }
 }
 
@@ -107,6 +113,14 @@ table.data-viewer {
   form {
     margin-left: 1em;
   }
+}
+
+.warn {
+  color: red;
+}
+
+.none {
+  display: none;
 }
 </style>
 {% endblock %}
@@ -194,6 +208,18 @@ table.data-viewer {
           <input type="number" value="1" min="1" max="28"
             onchange="changePaymentDay()">
         </article>
+
+        <article>
+          <h1>社会保険料の控除</h1>
+          <select name="socialInsuranceDeduction" onchange="changeSocialInsuranceDeduction()">
+            <option value="nextMonth" selected>翌月</option>
+            <!-- <option value="thisMonth">当月</option> -->
+          </select>
+          <p class="warn none">
+            法律上は翌月に控除する必要があります。
+            詳しくは、厚生年金保険法の第八十四条と健康保険法の第百六十七条をご確認下さい。
+          </p>
+        </article>
       </div>
 
       <div class="control">
@@ -227,8 +253,26 @@ function changePaymentDay() {
     selectedPaymentDay :
     Number.parseInt(paymentDayInput.value);
 }
-
 changePaymentDay();
+
+const socialInsuranceDeductionSelect =
+  document.querySelector('select[name="socialInsuranceDeduction"]');
+const socialInsuranceDeductionWarn =
+  socialInsuranceDeductionSelect.nextElementSibling;
+let socialInsuranceDeduction;
+
+function changeSocialInsuranceDeduction() {
+  socialInsuranceDeduction =
+    socialInsuranceDeductionSelect.selectedOptions[0].value;
+  if (socialInsuranceDeduction === 'nextMonth') {
+    socialInsuranceDeductionWarn.classList.add('none');
+  } else {
+    socialInsuranceDeductionWarn.classList = [
+      ...socialInsuranceDeductionWarn.classList
+    ].filter(x => x !== 'none');
+  }
+}
+changeSocialInsuranceDeduction();
 
 async function input(files) {
   if (files.length === 0) {
@@ -602,9 +646,11 @@ async function execute(form) {
       const user = users[item.username] ??= {};
       user.name = item.name ?? user.name;
       user.nameJa = item.nameJa ?? user.nameJa;
+      user.birthday = item.birthday ?? user.birthday;
       user.zone = item.zone ?? user.zone;
       user.address = item.address ?? user.address;
       user.dependents = item.dependents ?? user.dependents;
+      user.undeductedSocialInsurances ??= [];
 
       states[item.username] ??= { si: { traced: undefined } };
       if (
@@ -659,6 +705,7 @@ async function execute(form) {
       const reimbursedExpenses = userExpenses[username] ?? 0;  // 立替経費
       const totalPayment = siCalcTarget + reimbursedExpenses;
 
+      // 当月の社会保険料の控除分
       let pensionInsuranceDeduction = 0;
       let healthInsuranceDeduction = 0;
 
@@ -731,8 +778,22 @@ async function execute(form) {
           states[username].si.traced = undefined;
         }
 
-        pensionInsuranceDeduction = user.currentPensionInsurance.控除額;
-        healthInsuranceDeduction = user.currentHealthInsurance.介護保険の被保険者でない場合_控除額;
+        // 未控除の社会保険リストに追加する
+        user.undeductedSocialInsurances.push({
+          month: startOfMonth,
+          pension: user.currentPensionInsurance,
+          health: user.currentHealthInsurance
+        });
+
+        // 前月分の社会保険料があればそれを控除する (現在の控除時期は翌月一択)
+        const prevMonth =
+          paymentDate.clone().startOf('month').subtract(1, 'months');
+        const socialInsurance =
+          user.undeductedSocialInsurances.find(x => x.month.isSame(prevMonth));
+        if (socialInsurance) {
+          pensionInsuranceDeduction = socialInsurance.pension.控除額;
+          healthInsuranceDeduction = socialInsurance.health.介護保険の被保険者でない場合_控除額;
+        }
       }
 
       const taxBase = taxablePayment - pensionInsuranceDeduction - healthInsuranceDeduction;
