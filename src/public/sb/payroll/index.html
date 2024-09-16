@@ -646,7 +646,9 @@ async function execute(form) {
       const user = users[item.username] ??= {};
       user.name = item.name ?? user.name;
       user.nameJa = item.nameJa ?? user.nameJa;
-      user.birthday = item.birthday ?? user.birthday;
+
+      if (item.birthday) user.birthday = moment(item.birthday).startOf('day');
+
       user.zone = item.zone ?? user.zone;
       user.address = item.address ?? user.address;
       user.dependents = item.dependents ?? user.dependents;
@@ -720,6 +722,15 @@ async function execute(form) {
         const pensionInsuranceTable = await pensionInsurance.getTable(paymentDate);
         const healthInsuranceTable = await healthInsurance.getTable(paymentDate);
 
+        // 介護保険料の徴収フラグ
+        let withCareInsurance = false;
+
+        if (user.birthday) {
+          const border = user.birthday.clone().subtract(1, 'days');
+          const age = endOfMonth.diff(border, 'years');
+          withCareInsurance = age >= 40;
+        }
+
         if (user.currentPensionInsurance === undefined) {
           user.currentPensionInsurance = pensionInsuranceTable.find(x =>
             x.報酬月額_以上 <= siCalcTarget && siCalcTarget < x.報酬月額_未満);
@@ -781,8 +792,10 @@ async function execute(form) {
         // 未控除の社会保険リストに追加する
         user.undeductedSocialInsurances.push({
           month: startOfMonth,
-          pension: user.currentPensionInsurance,
-          health: user.currentHealthInsurance
+          pension: user.currentPensionInsurance.控除額,
+          health: withCareInsurance ?
+            user.currentHealthInsurance.介護保険の被保険者の場合_控除額 :
+            user.currentHealthInsurance.介護保険の被保険者でない場合_控除額
         });
 
         // 前月分の社会保険料があればそれを控除する (現在の控除時期は翌月一択)
@@ -791,8 +804,8 @@ async function execute(form) {
         const socialInsurance =
           user.undeductedSocialInsurances.find(x => x.month.isSame(prevMonth));
         if (socialInsurance) {
-          pensionInsuranceDeduction = socialInsurance.pension.控除額;
-          healthInsuranceDeduction = socialInsurance.health.介護保険の被保険者でない場合_控除額;
+          pensionInsuranceDeduction = socialInsurance.pension;
+          healthInsuranceDeduction = socialInsurance.health;
         }
       }
 
