@@ -526,6 +526,7 @@ class Payrolls extends Sequential {
         '支給額合計',
         '社会保険報酬月額',
         '健康保険料',
+        '介護保険料',
         '厚生年金保険料',
         '所得税',
         '所得税還付残高',
@@ -545,6 +546,7 @@ class Payrolls extends Sequential {
           x.totalPayment,
           x.socialInsuranceMonthlyRemuneration,
           x.healthInsuranceDeduction,
+          x.careInsuranceDeduction,
           x.pensionInsuranceDeduction,
           x.withholdingIncomeTaxAmount,
           x.withholdingIncomeTaxRefundBalance,
@@ -710,6 +712,7 @@ async function execute(form) {
       // 当月の社会保険料の控除分
       let pensionInsuranceDeduction = 0;
       let healthInsuranceDeduction = 0;
+      let careInsuranceDeduction = 0;
 
       if (corp.shakaiHokenRegistered) {
         if (
@@ -793,9 +796,11 @@ async function execute(form) {
         user.undeductedSocialInsurances.push({
           month: startOfMonth,
           pension: user.currentPensionInsurance.控除額,
-          health: withCareInsurance ?
-            user.currentHealthInsurance.介護保険の被保険者の場合_控除額 :
-            user.currentHealthInsurance.介護保険の被保険者でない場合_控除額
+          health: user.currentHealthInsurance.介護保険の被保険者でない場合_控除額,
+          care: withCareInsurance ?
+            user.currentHealthInsurance.介護保険の被保険者の場合_控除額 -
+              user.currentHealthInsurance.介護保険の被保険者でない場合_控除額 :
+            0
         });
 
         // 前月分の社会保険料があればそれを控除する (現在の控除時期は翌月一択)
@@ -806,10 +811,14 @@ async function execute(form) {
         if (socialInsurance) {
           pensionInsuranceDeduction = socialInsurance.pension;
           healthInsuranceDeduction = socialInsurance.health;
+          careInsuranceDeduction = socialInsurance.care;
         }
       }
 
-      const taxBase = taxablePayment - pensionInsuranceDeduction - healthInsuranceDeduction;
+      const insuranceDeduction = pensionInsuranceDeduction +
+        healthInsuranceDeduction + careInsuranceDeduction;
+
+      const taxBase = taxablePayment - insuranceDeduction;
       const withholdingIncomeTax = withholdingIncomeTaxTable
         .find(({ start, end }) => start <= taxBase && taxBase < end);
       const withholdingIncomeTaxAmount =
@@ -848,13 +857,13 @@ async function execute(form) {
         socialInsuranceMonthlyRemuneration: siCalcTarget,
         pensionInsuranceDeduction,
         healthInsuranceDeduction,
+        careInsuranceDeduction,
         withholdingIncomeTaxAmount,
         withholdingIncomeTaxRefundBalance,
         withholdingIncomeTaxAdjustedAmount,
         residentTaxAmount,
-        netPayment: totalPayment - pensionInsuranceDeduction -
-          healthInsuranceDeduction - withholdingIncomeTaxAdjustedAmount -
-          residentTaxAmount
+        netPayment: totalPayment - insuranceDeduction -
+          withholdingIncomeTaxAdjustedAmount - residentTaxAmount
       };
 
       if (states[username].si.traced) {
