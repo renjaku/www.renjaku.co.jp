@@ -1,0 +1,93 @@
+{% extends "src/layouts/main.html" %}
+
+{% set subtitle = "contact" %}
+
+{% block head %}
+<style>
+input[type=text], textarea {
+  width: 100%;
+  max-width: 32em;
+  display: block;
+  margin-bottom: .5em;
+  padding: .5em;
+  font-family: inherit;
+}
+textarea {
+  width: 100%;
+  max-width: 32em;
+  min-height: 4em;
+  font-family: inherit;
+}
+button {
+  width: 100%;
+  max-width: 32em;
+  display: block;
+  padding: .4em .5em;
+  border-radius: .25em;
+  font-family: inherit;
+}
+@media screen and (min-width: 1024px) {
+  button {
+    width: inherit;
+  }
+}
+</style>
+
+<script>
+function rot13(s) {
+  return s.replace(/[a-zA-Z]/g, c => String.fromCharCode((c <= 'Z' ? 90 : 122) >= (c = c.charCodeAt(0) + 13) ? c : c - 26));
+}
+
+function send() {
+  let email = document.querySelector('input[type=text]');
+  let message = document.querySelector('textarea');
+
+  const validErrors = [];
+  const emailValue = email.value.trim();
+  const messageValue = message.value.trim();
+
+  if (emailValue && emailValue.split('@').length != 2)
+    validErrors.push('メールアドレスの形式に不備があります。');
+
+  if (!messageValue)
+    validErrors.push('問い合わせ内容を入力してください。');
+
+  if (validErrors.length > 0) {
+    validErrors.forEach(x => window.alert(x));
+    return;
+  }
+
+  if (
+    !emailValue &&
+    !window.confirm('弊社からの返信を受け取るメールアドレスが入力されていませんが、よろしいですか？')
+  ) return;
+
+  let req = new XMLHttpRequest();
+  req.open('POST', rot13('uggcf://qvfpbeq.pbz/ncv/jroubbxf/932997533146415195/jtRIrb_d030zHkuXXSC6p-aEp4eOyKDkBdVn9eJBMGnlh8ZSs7xy7-8XCpAcHnGKmWrG'));
+  req.setRequestHeader('Content-Type', 'application/json');
+  req.onload = () => window.alert('送信が完了しました。内容を確認次第ご返信いたしますので、しばらくお待ちください。');
+  req.onerror = () =>
+    window.alert('There was an error processing your request. ' +
+                 'Please wait and try again later.');
+  const content = `
+@everyone ${messageValue}
+
+Reply-To: ${emailValue}
+`.trim();
+  req.send(JSON.stringify({ content }));
+}
+</script>
+{% endblock %}
+
+{% block main %}
+<main>
+  <section>
+    <h1>contact</h1>
+    <form onsubmit="send(); return false">
+      <input type="text" placeholder="弊社からの返信を受け取るメールアドレス">
+      <textarea placeholder="メッセージをここに入力してください。"></textarea>
+      <button>送信</button>
+    </form>
+  </section>
+</main>
+{% endblock %}

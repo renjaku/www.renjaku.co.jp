@@ -1,8 +1,9 @@
 {% extends "src/layouts/main.html" %}
 
-{% set subtitle = "profiles" %}
+{% set subtitle = "profile" %}
 
 {% block head %}
+<meta http-equiv="refresh" content="3;url=https://www.renjaku.co.jp/profile">
 <style>
 address {
   display: block;
@@ -24,114 +25,8 @@ dt > a {
 {% block main %}
 <main>
   <section>
-    <h1>profiles</h1>
-    <article>
-      <dl>
-        <dt id="name">商号</dt>
-        <dd>
-          <span lang="ja">連雀株式会社</span>
-          (<span lang="en">Renjaku Inc.</span>)
-        </dd>
-
-        <dt id="description">事業内容</dt>
-        <dd>
-          コンピュータシステムの企画、開発、販売及び保守に関する業務
-        </dd>
-
-        <dt id="established">設立</dt>
-        <dd>
-          2020/1/8
-        </dd>
-
-        <dt id="capital-stock">資本金</dt>
-        <dd>
-          &yen;1,000,000
-        </dd>
-
-        <dt id="address">本社所在地</dt>
-        <dd>
-          <address lang="ja">
-            〒150-0031<br>
-            東京都渋谷区桜丘町２３番１７号<br>
-            シティコート桜丘４０８
-          </address>
-          <address lang="en">
-            408 City Court Sakuragaoka,<br>
-            23-17, Sakuragaoka-cho,<br>
-            Shibuya-ku, Tokyo 150-0031, Japan
-          </address>
-        </dd>
-
-        <dt id="representative">代表者</dt>
-        <dd>
-          <span>代表取締役社長</span>
-          <span>前田 紳太郎</span>
-        </dd>
-
-        <dt>会社法人等番号</dt>
-        <dd>
-          {{ corporateNumber.slice(1) }}
-        </dd>
-
-        <dt id="corporate-number">法人番号</dt>
-        <dd>
-          <a href="https://www.houjin-bangou.nta.go.jp/henkorireki-johoto.html?selHouzinNo={{ corporateNumber }}">
-            {{ corporateNumber }}
-          </a>
-        </dd>
-
-        <dt id="tax-registration-id">適格請求書発行事業者の登録番号</dt>
-        <dd>
-          <a href="https://www.invoice-kohyo.nta.go.jp/regno-search/detail?selRegNo={{ corporateNumber }}">
-            T{{ corporateNumber }}
-          </a>
-          (<a href="/tax-registration-id.txt">tax-registration-id.txt</a>)
-        </dd>
-
-        <dt id="number-of-members">従業員数</dt>
-        <dd>
-          <a href="https://www2.nenkin.go.jp/do/search_section/">日本年金機構の検索システム</a>にて「法人番号」で検索ください。
-        </dd>
-
-        <dt id="partners">取引先</dt>
-        <dd>
-          <ul>
-            <li>
-              <a href="https://aws.amazon.com/jp/">
-                Amazon Web Services, Inc
-              </a>
-            </li>
-          </ul>
-        </dd>
-
-        <dt id="links">参考リンク</dt>
-        <dd>
-          <ul>
-            <li>
-              <a href="https://info.gbiz.go.jp/hojin/ichiran?hojinBango={{ corporateNumber }}">
-                連雀株式会社 | gBizINFO
-              </a>
-            </li>
-            <li>
-              <a href="https://www.facebook.com/renjaku.co.jp">
-                連雀株式会社 | Facebook
-              </a>
-            </li>
-          </ul>
-        </dd>
-      </dl>
-    </article>
+    このページは移動しました。
+    3 秒後、<a href="/profile">新しいページ</a>に自動でリダイレクトします。
   </section>
 </main>
-
-<script>
-for (const el of document.querySelectorAll('dt')) {
-  if (!el.id) continue;
-  const a = document.createElement('a');
-  a.href = '#' + el.id;
-  a.innerHTML = el.innerHTML;
-  el.innerHTML = '';
-  el.append(a);
-}
-</script>
 {% endblock %}
