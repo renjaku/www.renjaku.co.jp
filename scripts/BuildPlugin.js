@@ -12,6 +12,13 @@ const templateExtnames = {
   '.txt': '.txt'
 }
 
+const env = new nunjucks.Environment(new nunjucks.FileSystemLoader('.'));
+env.addFilter('json', (value, spaces) => {
+  if (value instanceof nunjucks.runtime.SafeString) value = value.toString();
+  const json = JSON.stringify(value, null, spaces).replace(/</g, '\\u003c');
+  return nunjucks.runtime.markSafe(json);
+});
+
 module.exports = class {
   constructor(options) {
     this.options = options;
@@ -42,7 +49,7 @@ module.exports = class {
                   bundleFile;
                 return getBundleWebPath(bundleFile, this.options.dist);
               });
-            const content = nunjucks.render(file, context);
+            const content = env.render(file, context);
 
             const relativeOutputPath = path.format({
               ...path.parse(relativePath),

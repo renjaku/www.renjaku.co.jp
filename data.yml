@@ -1,10 +1,11 @@
 title: 連雀株式会社
 description: コンピュータシステムの企画、開発、販売及び保守に関する業務を承ります。
-foo: bar
-items:
-  - a
-  - b
-  - c
-  - d
 corporateNumber: "9011001131790"
 employees: 2
+url: https://www.renjaku.co.jp/
+address:
+  country: JPN
+  postalCode: 150-0031
+  locality: 渋谷区
+  region: 東京都
+  streetAddress: 桜丘町２３番１７号 シティコート桜丘４０８

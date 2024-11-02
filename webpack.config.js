@@ -10,8 +10,42 @@ const distDir = path.resolve(__dirname, 'dist');
 
 const dataFile = path.resolve(__dirname, 'data.yml');
 
+function createSchemaOrg(data) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    url: data.url,
+    name: data.title,
+    description: data.description,
+    publisher: {
+      '@type': 'Corporation',
+      name: data.title,
+      url: data.url,
+      address: {
+        '@type': 'PostalAddress',
+        addressCountry: data.address.country,
+        postalCode: data.address.postalCode,
+        addressLocality: data.address.locality,
+        addressRegion: data.address.region,
+        streetAddress: data.address.streetAddress
+      },
+      identifier: {
+        '@type': 'PropertyValue',
+        propertyID: 'CorporateNumber',
+        value: data.corporateNumber
+      },
+      vatID: 'T' + data.corporateNumber,
+      numberOfEmployees: {
+        '@type': 'QuantitativeValue',
+        value: data.employees
+      }
+    }
+  };
+}
+
 module.exports = async env => {
   const data = YAML.parse(await fs.readFile(dataFile, 'utf8'));
+  data.schemaorg = createSchemaOrg(data);
 
   const config = {
     entry: {
