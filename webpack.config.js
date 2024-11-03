@@ -8,37 +8,42 @@ const { IgnorePlugin } = require('webpack');
 const srcDir = path.resolve(__dirname, 'src');
 const distDir = path.resolve(__dirname, 'dist');
 
-const dataFile = path.resolve(__dirname, 'data.yml');
+const dataFile = path.resolve(__dirname, 'data.yaml');
 
 function createSchemaOrg(data) {
   return {
     '@context': 'https://schema.org',
-    '@type': 'WebSite',
-    url: data.url,
+    '@type': 'Organization',
     name: data.title,
-    description: data.description,
-    publisher: {
-      '@type': 'Corporation',
-      name: data.title,
-      url: data.url,
-      address: {
-        '@type': 'PostalAddress',
-        addressCountry: data.address.country,
-        postalCode: data.address.postalCode,
-        addressLocality: data.address.locality,
-        addressRegion: data.address.region,
-        streetAddress: data.address.streetAddress
-      },
-      identifier: {
-        '@type': 'PropertyValue',
-        propertyID: 'CorporateNumber',
-        value: data.corporateNumber
-      },
-      vatID: 'T' + data.corporateNumber,
-      numberOfEmployees: {
-        '@type': 'QuantitativeValue',
-        value: data.employees
-      }
+    url: data.url,
+    address: {
+      '@type': 'PostalAddress',
+      addressCountry: data.address.country,
+      postalCode: data.address.postalCode,
+      addressLocality: data.address.locality,
+      addressRegion: data.address.region,
+      streetAddress: data.address.streetAddress
+    },
+    identifier: {
+      '@type': 'PropertyValue',
+      propertyID: 'CorporateNumber',
+      value: data.corporateNumber
+    },
+    vatID: 'T' + data.corporateNumber,
+    numberOfEmployees: {
+      '@type': 'QuantitativeValue',
+      value: data.employees
+    },
+    founder: {
+      '@type': 'Person',
+      name: data.representative,
+    },
+    foundingDate: data.established,
+    contactPoint: {
+      '@type': 'ContactPoint',
+      email: null,
+      telephone: null,
+      url: 'https://www.renjaku.co.jp/#contact'
     }
   };
 }
@@ -71,7 +76,7 @@ module.exports = async env => {
   if (env.development) {
     config.devServer = {
       static: { directory: distDir },
-      host: '0.0.0.0',
+      allowedHosts: 'all',
       port: env.port ?? process.env.PORT ?? 8000
     };
   }

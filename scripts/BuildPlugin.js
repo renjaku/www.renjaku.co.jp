@@ -1,5 +1,6 @@
 const fs = require('fs/promises');
 const path = require('path');
+const moment = require('moment');
 const nunjucks = require('nunjucks');
 const { getBundleWebPath, getFiles } = require('./utils');
 
@@ -18,6 +19,8 @@ env.addFilter('json', (value, spaces) => {
   const json = JSON.stringify(value, null, spaces).replace(/</g, '\\u003c');
   return nunjucks.runtime.markSafe(json);
 });
+env.addFilter('numberFormat', value => new Intl.NumberFormat().format(value));
+env.addFilter('dateFormat', (value, format) => moment(value).format(format));
 
 module.exports = class {
   constructor(options) {

@@ -48,7 +48,8 @@ nav li {
   margin: 0 .75em 0 0;
 }
 article {
-  margin: .75em;
+  margin-left: 0;
+  margin-right: 0;
 }
 a {
   color: #499bea;
@@ -92,5 +93,8 @@ dd {
   body {
     margin-left: 4em;
     margin-right: 4em;
+  }
+  article {
+    margin: .75em;
   }
 }

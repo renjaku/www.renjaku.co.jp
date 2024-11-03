@@ -1,5 +1,8 @@
 title: 連雀株式会社
 description: コンピュータシステムの企画、開発、販売及び保守に関する業務を承ります。
+established: 2020-01-08
+capitalStock: 1000000
+representative: 前田 紳太郎
 corporateNumber: "9011001131790"
 employees: 2
 url: https://www.renjaku.co.jp/
@@ -9,3 +12,11 @@ address:
   locality: 渋谷区
   region: 東京都
   streetAddress: 桜丘町２３番１７号 シティコート桜丘４０８
+en:
+  title: Renjaku Inc.
+  address:
+    country: Japan
+    postalCode: 150-0031
+    locality: Shibuya-ku
+    region: Tokyo
+    streetAddress: 408 City Court Sakuragaoka, 23-17, Sakuragaoka-cho

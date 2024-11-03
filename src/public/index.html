@@ -2,7 +2,7 @@
 
 {% block head %}
 <style>
-.services {
+#services {
   .container {
     display: flex;
     justify-content: center;
@@ -35,7 +35,7 @@
 }
 
 @media screen and (min-width: 1024px) {
-  .services {
+  #services {
     .container {
       justify-content: flex-start;
     }
@@ -70,6 +70,51 @@
   content: '📄';
   margin-right: .25em;
 }
+
+input[type=text], textarea {
+  width: 100%;
+  max-width: 32em;
+  display: block;
+  margin-bottom: .5em;
+  padding: .5em;
+  font-family: inherit;
+}
+textarea {
+  width: 100%;
+  max-width: 32em;
+  min-height: 4em;
+  font-family: inherit;
+}
+button {
+  width: 100%;
+  max-width: 32em;
+  display: block;
+  padding: .4em .5em;
+  border-radius: .25em;
+  font-family: inherit;
+}
+@media screen and (min-width: 1024px) {
+  button {
+    width: inherit;
+  }
+}
+
+/* FIXME */
+table {
+  border: 1px solid gray;
+  border-collapse: collapse;
+
+  th, td {
+    border: 1px solid gray;
+    padding: .5em;
+  }
+}
+address {
+  display: block;
+  font-style: normal;
+  font-weight: normal;
+  margin: .5em 0;
+}
 </style>
 
 <script type="application/ld+json">
@@ -81,10 +126,10 @@
 <main>
   <section>
     <p>連雀株式会社では、デザインやシステム開発を承っております。</p>
-    <p>まずは<a href="/contact">お問い合わせ</a>ください！</p>
+    <p>まずは<a href="#contact">お問い合わせ</a>ください！</p>
   </section>
 
-  <section class="services">
+  <section id="services">
     <h1>services</h1>
     <div class="container anim">
       <article class="design">
@@ -101,10 +146,110 @@
       </article>
     </div>
   </section>
+
+  <section id="profile">
+    <h1>profile</h1>
+    <article>
+      <table>
+        <tr>
+          <td>商号</td>
+          <td>
+            <span lang="ja">{{ title }}</span>
+            (<span lang="en">{{ en.title }}</span>)
+          </td>
+        </tr>
+        <tr>
+          <td>事業内容</td>
+          <td>{{ description }}</td>
+        </tr>
+        <tr>
+          <td>設立</td>
+          <td>{{ established | dateFormat('YYYY/M/D') }}</td>
+        </tr>
+        <tr>
+          <td>資本金</td>
+          <td>&yen;{{ capitalStock | numberFormat }}</td>
+        </tr>
+        <tr>
+          <td>本社所在地</td>
+          <td>
+            <address lang="ja">
+              〒{{ address.postalCode }}<br>
+              {{ address.region }}{{ address.locality }}{{ address.streetAddress }}
+            </address>
+            <address lang="en">
+              {{ en.address.streetAddress }},<br>
+              {{ en.address.locality }}, {{ en.address.region }} {{ en.address.postalCode }},
+              {{ en.address.country }}
+            </address>
+          </td>
+        </tr>
+        <tr>
+          <td>代表者</td>
+          <td>
+            <span>代表取締役社長</span>
+            <span>{{ representative }}</span>
+          </td>
+        </tr>
+        <tr>
+          <td>会社法人等番号</td>
+          <td>{{ corporateNumber.slice(1) }}</td>
+        </tr>
+        <tr>
+          <td>法人番号</td>
+          <td>
+            <a href="https://www.houjin-bangou.nta.go.jp/henkorireki-johoto.html?selHouzinNo={{ corporateNumber }}">
+              {{ corporateNumber }}
+            </a>
+          </td>
+        </tr>
+        <tr>
+          <td>適格請求書発行事業者の登録番号</td>
+          <td>
+            <a href="https://www.invoice-kohyo.nta.go.jp/regno-search/detail?selRegNo={{ corporateNumber }}">
+              T{{ corporateNumber }}
+            </a>
+          </td>
+        </tr>
+        <tr>
+          <td>従業員数</td>
+          <td>{{ employees }} 人</td>
+        </tr>
+        <tr>
+          <td>参考リンク</td>
+          <td>
+            <ul>
+              <li>
+                <a href="https://info.gbiz.go.jp/hojin/ichiran?hojinBango={{ corporateNumber }}">
+                  連雀株式会社 | gBizINFO
+                </a>
+              </li>
+              <li>
+                <a href="https://www.facebook.com/renjaku.co.jp">
+                  連雀株式会社 | Facebook
+                </a>
+              </li>
+            </ul>
+          </td>
+        </tr>
+      </table>
+    </article>
+  </section>
+
+  <section id="contact">
+    <h1>contact</h1>
+    <article>
+      <form onsubmit="send(); return false">
+        <input type="text" placeholder="弊社からの返信を受け取るメールアドレス">
+        <textarea placeholder="メッセージをここに入力してください。"></textarea>
+        <button>送信</button>
+      </form>
+    </article>
+  </section>
 </main>
 
 <script>
-const serviceContainer = document.querySelector('.services .container');
+const serviceContainer = document.querySelector('#services .container');
 
 if (window.sessionStorage.checkin) {
   serviceContainer.classList.add('inviewed');
