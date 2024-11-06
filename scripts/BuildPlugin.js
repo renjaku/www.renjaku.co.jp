@@ -47,26 +47,6 @@ module.exports = class {
             return getBundleWebPath(bundleFile, this.options.dist);
           });
 
-          const urlset = [];
-          for (const [path, file] of Object.entries(context.pathPageMap)) {
-            const { stdout } =
-              await execFileAsync('git', ['log', '-1', '--format=%cd', file]);
-            const url = new URL(path, context.url);
-            urlset.push({ loc: url.href, lastmod: new Date(stdout.trim()) });
-          }
-          let sitemap = `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-`;
-          for (const { loc, lastmod } of urlset) {
-            sitemap += `  <url>
-    <loc>${loc}</loc>
-    <lastmod>${lastmod.toISOString()}</lastmod>
-  </url>
-`;
-          }
-          sitemap += '</urlset>\n';
-          await fs.writeFile(path.join(dist, 'sitemap.xml'), sitemap);
-
         for (const file of getFiles(src)) {
           const ext = path.extname(file);
           const relativePath = path.relative(src, file);
@@ -101,6 +81,26 @@ module.exports = class {
           await fs.mkdir(outputDir, { recursive: true });
           await output.execute();
         }
+
+        const urlset = [];
+        for (const [path, file] of Object.entries(context.pathPageMap)) {
+          const { stdout } =
+            await execFileAsync('git', ['log', '-1', '--format=%cd', file]);
+          const url = new URL(path, context.url);
+          urlset.push({ loc: url.href, lastmod: new Date(stdout.trim()) });
+        }
+        let sitemap = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+`;
+        for (const { loc, lastmod } of urlset) {
+          sitemap += `  <url>
+    <loc>${loc}</loc>
+    <lastmod>${lastmod.toISOString()}</lastmod>
+  </url>
+`;
+        }
+        sitemap += '</urlset>\n';
+        await fs.writeFile(path.join(dist, 'sitemap.xml'), sitemap);
       }
     );
   }
