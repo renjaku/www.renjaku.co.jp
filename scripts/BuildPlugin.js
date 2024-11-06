@@ -2,7 +2,11 @@ const fs = require('fs/promises');
 const path = require('path');
 const moment = require('moment');
 const nunjucks = require('nunjucks');
+const util = require('node:util');
+const { execFile } = require('node:child_process');
 const { getBundleWebPath, getFiles } = require('./utils');
+
+const execFileAsync = util.promisify(execFile);
 
 const pluginName = path.basename(__filename).replace(/\.[^/.]+$/, '');
 
@@ -33,25 +37,45 @@ module.exports = class {
       async compilation => {
         const src = this.options.src;
         const dist = this.options.dist;
+        const context = this.options.context ?? {};
+        context.$bundles = Object.keys(compilation.assets)
+          .filter(x => x.endsWith('.js'))
+          .map(bundleFile => {
+            bundleFile = compiler.options.output.path ?
+              path.join(compiler.options.output.path, bundleFile) :
+              bundleFile;
+            return getBundleWebPath(bundleFile, this.options.dist);
+          });
+
+          const urlset = [];
+          for (const [path, file] of Object.entries(context.pathPageMap)) {
+            const { stdout } =
+              await execFileAsync('git', ['log', '-1', '--format=%cd', file]);
+            const url = new URL(path, context.url);
+            urlset.push({ loc: url.href, lastmod: new Date(stdout.trim()) });
+          }
+          let sitemap = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+`;
+          for (const { loc, lastmod } of urlset) {
+            sitemap += `  <url>
+    <loc>${loc}</loc>
+    <lastmod>${lastmod.toISOString()}</lastmod>
+  </url>
+`;
+          }
+          sitemap += '</urlset>\n';
+          await fs.writeFile(path.join(dist, 'sitemap.xml'), sitemap);
 
         for (const file of getFiles(src)) {
           const ext = path.extname(file);
           const relativePath = path.relative(src, file);
           const relativePosixPath =
             path.posix.join(...relativePath.split(path.sep));
-          const output = { path, async execute() {} };
+          const output = { path: null, async execute() {} };
 
           if (Object.keys(templateExtnames).includes(ext) &&
               !this.options.static?.includes(relativePosixPath)) {
-            const context = this.options.context ?? {};
-            context.$bundles = Object.keys(compilation.assets)
-              .filter(x => x.endsWith('.js'))
-              .map(bundleFile => {
-                bundleFile = compiler.options.output.path ?
-                  path.join(compiler.options.output.path, bundleFile) :
-                  bundleFile;
-                return getBundleWebPath(bundleFile, this.options.dist);
-              });
             const content = env.render(file, context);
 
             const relativeOutputPath = path.format({

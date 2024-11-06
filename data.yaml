@@ -20,3 +20,6 @@ en:
     locality: Shibuya-ku
     region: Tokyo
     streetAddress: 408 City Court Sakuragaoka, 23-17, Sakuragaoka-cho
+pathPageMap:
+  /: src/public/index.html
+  /sb/payroll/: src/public/sb/payroll/index.html
