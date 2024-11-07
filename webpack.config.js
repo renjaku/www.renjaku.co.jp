@@ -55,6 +55,7 @@ module.exports = async env => {
   const config = {
     entry: {
       index: `${srcDir}/index.js`,
+      contact: `${srcDir}/contact.js`,
       encoding: `${srcDir}/encoding.js`
     },
     output: { filename: '[name].bundle.js', path: `${distDir}/js` },
