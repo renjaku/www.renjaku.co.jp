@@ -138,7 +138,7 @@ module.exports = class {
           const lastmod = new Date(stdout.trim());
           console.info(
             'Sitemap URL', `${url.href} (${file})`,
-            'was last modified at ', lastmod.toISOString()
+            'was last modified at', lastmod.toISOString()
           );
           urlset.push({ loc: url.href, lastmod });
         }
