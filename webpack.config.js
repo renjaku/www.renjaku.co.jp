@@ -26,7 +26,7 @@ function createSchemaOrg(data) {
     },
     identifier: {
       '@type': 'PropertyValue',
-      propertyID: 'CorporateNumber',
+      propertyID: 'corporateNumber',
       value: data.corporateNumber
     },
     vatID: 'T' + data.corporateNumber,
@@ -44,7 +44,14 @@ function createSchemaOrg(data) {
       email: null,
       telephone: null,
       url: 'https://www.renjaku.co.jp/#contact'
-    }
+    },
+    additionalProperty: [
+      {
+        '@type': 'PropertyValue',
+        propertyID: 'capitalStock',
+        value: data.capitalStock
+      }
+    ]
   };
 }
 
