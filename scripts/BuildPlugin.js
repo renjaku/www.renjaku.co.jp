@@ -135,7 +135,12 @@ module.exports = class {
           const { stdout } =
             await execFileAsync('git', ['log', '-1', '--format=%cd', file]);
           const url = new URL(path, context.url);
-          urlset.push({ loc: url.href, lastmod: new Date(stdout.trim()) });
+          const lastmod = new Date(stdout.trim());
+          console.info(
+            'Sitemap URL', `${url.href} (${file})`,
+            'was last modified at ', lastmod.toISOString()
+          );
+          urlset.push({ loc: url.href, lastmod });
         }
         let sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
