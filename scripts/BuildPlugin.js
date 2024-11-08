@@ -15,7 +15,7 @@ const templateExtnames = {
   '.html': '.html',
   '.njk': '.html',
   '.txt': '.txt'
-}
+};
 
 const env = new nunjucks.Environment(new nunjucks.FileSystemLoader('.'));
 env.addFilter('json', (value, spaces) => {
@@ -25,6 +25,53 @@ env.addFilter('json', (value, spaces) => {
 });
 env.addFilter('numberFormat', value => new Intl.NumberFormat().format(value));
 env.addFilter('dateFormat', (value, format) => moment(value).format(format));
+
+function createSchemas(context) {
+  return [
+    {
+      '@context': 'https://schema.org',
+      '@type': 'Organization',
+      name: context.title,
+      url: context.url,
+      address: {
+        '@type': 'PostalAddress',
+        addressCountry: context.address.country,
+        postalCode: context.address.postalCode,
+        addressLocality: context.address.locality,
+        addressRegion: context.address.region,
+        streetAddress: context.address.streetAddress
+      },
+      identifier: {
+        '@type': 'PropertyValue',
+        propertyID: 'corporateNumber',
+        value: context.corporateNumber
+      },
+      vatID: 'T' + context.corporateNumber,
+      numberOfEmployees: {
+        '@type': 'QuantitativeValue',
+        value: context.employees
+      },
+      founder: {
+        '@type': 'Person',
+        name: context.representative,
+      },
+      foundingDate: context.established,
+      contactPoint: {
+        '@type': 'ContactPoint',
+        email: null,
+        telephone: null,
+        url: new URL(context.contactPage, context.url).href
+      },
+      additionalProperty: [
+        {
+          '@type': 'PropertyValue',
+          propertyID: 'capitalStock',
+          value: context.capitalStock
+        }
+      ]
+    }
+  ];
+}
 
 module.exports = class {
   constructor(options) {
@@ -46,6 +93,7 @@ module.exports = class {
               bundleFile;
             return getBundleWebPath(bundleFile, this.options.dist);
           });
+        context.schemas = createSchemas(context);
 
         for (const file of getFiles(src)) {
           const ext = path.extname(file);

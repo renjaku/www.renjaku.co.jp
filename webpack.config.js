@@ -10,54 +10,8 @@ const distDir = path.resolve(__dirname, 'dist');
 
 const dataFile = path.resolve(__dirname, 'data.yaml');
 
-function createSchemaOrg(data) {
-  return {
-    '@context': 'https://schema.org',
-    '@type': 'Organization',
-    name: data.title,
-    url: data.url,
-    address: {
-      '@type': 'PostalAddress',
-      addressCountry: data.address.country,
-      postalCode: data.address.postalCode,
-      addressLocality: data.address.locality,
-      addressRegion: data.address.region,
-      streetAddress: data.address.streetAddress
-    },
-    identifier: {
-      '@type': 'PropertyValue',
-      propertyID: 'corporateNumber',
-      value: data.corporateNumber
-    },
-    vatID: 'T' + data.corporateNumber,
-    numberOfEmployees: {
-      '@type': 'QuantitativeValue',
-      value: data.employees
-    },
-    founder: {
-      '@type': 'Person',
-      name: data.representative,
-    },
-    foundingDate: data.established,
-    contactPoint: {
-      '@type': 'ContactPoint',
-      email: null,
-      telephone: null,
-      url: 'https://www.renjaku.co.jp/#contact'
-    },
-    additionalProperty: [
-      {
-        '@type': 'PropertyValue',
-        propertyID: 'capitalStock',
-        value: data.capitalStock
-      }
-    ]
-  };
-}
-
 module.exports = async env => {
   const data = YAML.parse(await fs.readFile(dataFile, 'utf8'));
-  data.schemaorg = createSchemaOrg(data);
 
   const config = {
     entry: {

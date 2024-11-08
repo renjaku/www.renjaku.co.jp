@@ -113,9 +113,11 @@ address {
 }
 </style>
 
+{% for schema in schemas %}
 <script type="application/ld+json">
-  {{ schemaorg | json(2) }}
+  {{ schema | json(2) }}
 </script>
+{% endfor %}
 {% endblock %}
 
 {% block main %}
@@ -149,13 +151,13 @@ address {
         <tr>
           <td>商号</td>
           <td>
-            <span lang="ja">{{ title }}</span>
-            (<span lang="en">{{ en.title }}</span>)
+            <span lang="ja">{{ corporateName }}</span>
+            (<span lang="en">{{ en.corporateName }}</span>)
           </td>
         </tr>
         <tr>
           <td>事業内容</td>
-          <td>{{ description }}</td>
+          <td>{{ business }}</td>
         </tr>
         <tr>
           <td>設立</td>

@@ -1,11 +1,16 @@
-title: 連雀株式会社
-description: コンピュータシステムの企画、開発、販売及び保守に関する業務を承ります。
+title: &title 連雀株式会社
+description: >-
+  連雀株式会社は、Web 開発およびデザインを提供する企業です。
+  システム開発、Web サイト制作、OSS 開発に取り組んでいます。
+corporateName: *title
+business: Web システム開発、サイト制作、デザイン
 established: 2020-01-08
 capitalStock: 1000000
 representative: 前田 紳太郎
-corporateNumber: "9011001131790"
+corporateNumber: '9011001131790'
 employees: 2
 url: https://www.renjaku.co.jp/
+contactPage: /#contact
 address:
   country: JPN
   postalCode: 150-0031
@@ -13,7 +18,7 @@ address:
   region: 東京都
   streetAddress: 桜丘町２３番１７号 シティコート桜丘４０８
 en:
-  title: Renjaku Inc.
+  corporateName: Renjaku Inc.
   address:
     country: Japan
     postalCode: 150-0031

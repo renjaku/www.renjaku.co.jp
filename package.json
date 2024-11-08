@@ -17,14 +17,13 @@
     "yaml": "^2.4.3"
   },
   "scripts": {
-    "build": "npm run fix && webpack --config webpack.config.js --env production",
-    "build:dev": "npm run fix && webpack --config webpack.config.js --env development",
+    "build": "webpack --config webpack.config.js --env production",
+    "build:dev": "webpack --config webpack.config.js --env development",
     "clean": "node -e \"const fs = require('fs'); const path = require('path'); const dir = 'dist'; if (!fs.existsSync(dir)) process.exit(0); fs.readdirSync(dir).forEach(file => { const filePath = path.join(dir, file); fs.statSync(filePath).isDirectory() ? fs.rmSync(filePath, { recursive: true }) : fs.unlinkSync(filePath); }); console.log('Cleared dist directory');\"",
     "clean:build": "npm run clean && npm run build",
     "clean:build:dev": "npm run clean && npm run build:dev",
     "dev": "concurrently \"npm run clean:build:dev -- --watch\" \"npm run serve:dev\" \"npm run watch:dev\"",
     "fetch": "node scripts/fetch-employees.js",
-    "fix": "node scripts/fix-data-style.js",
     "serve:dev": "webpack serve --config webpack.config.js --env development",
     "watch:dev": "chokidar \"src/**\" --command \"npm run build:dev\""
   }
