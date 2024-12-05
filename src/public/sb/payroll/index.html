@@ -824,20 +824,25 @@ async function execute(form) {
       const withholdingIncomeTaxAmount =
         withholdingIncomeTax.dependents[user.dependents] ??
         withholdingIncomeTax.default;
+      const nonTaxableIncome = withholdingIncomeTaxAmount === 0;
 
       const withholdingIncomeTaxRefundBalance =
         user.withholdingIncomeTaxRefundBalance ?? 0;
-      const withholdingIncomeTaxAdjustedAmount = Math.max(
-        withholdingIncomeTaxAmount - withholdingIncomeTaxRefundBalance,
-        0
-      );
+      let withholdingIncomeTaxAdjustedAmount =
+        withholdingIncomeTaxAmount - withholdingIncomeTaxRefundBalance;
+      if (!nonTaxableIncome) {
+        withholdingIncomeTaxAdjustedAmount =
+          Math.max(withholdingIncomeTaxAdjustedAmount, 0);
+      }
 
       if (user.withholdingIncomeTaxRefundBalance) {
         // 相殺後残高を設定
-        user.withholdingIncomeTaxRefundBalance = Math.max(
-          withholdingIncomeTaxRefundBalance - withholdingIncomeTaxAmount,
-          0
-        );
+        user.withholdingIncomeTaxRefundBalance = nonTaxableIncome ?
+          0 :
+          Math.max(
+            withholdingIncomeTaxRefundBalance - withholdingIncomeTaxAmount,
+            0
+          );
       }
 
       const { amount: residentTaxAmount } = monthData.findLast(
