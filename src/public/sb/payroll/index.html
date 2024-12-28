@@ -729,8 +729,9 @@ async function execute(form) {
         let withCareInsurance = false;
 
         if (user.birthday) {
-          const border = user.birthday.clone().subtract(1, 'days');
-          const age = endOfMonth.diff(border, 'years');
+          const border =
+            user.birthday.clone().subtract(1, 'days').startOf('month');
+          const age = paymentDate.startOf('month').diff(border, 'years');
           withCareInsurance = age >= 40;
         }
 
