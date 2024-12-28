@@ -698,6 +698,7 @@ async function execute(form) {
     const paymentDate = paymentDay === 'endOfMonth' ?
       nextMonth.endOf('month') :
       nextMonth.set('date', paymentDay);
+    const paymentMonth = paymentDate.startOf('month');
 
     const withholdingIncomeTaxTable =
       await withholdingIncomeTax.getTable(paymentDate);
@@ -731,7 +732,7 @@ async function execute(form) {
         if (user.birthday) {
           const border =
             user.birthday.clone().subtract(1, 'days').startOf('month');
-          const age = paymentDate.startOf('month').diff(border, 'years');
+          const age = paymentMonth.diff(border, 'years');
           withCareInsurance = age >= 40;
         }
 
@@ -795,7 +796,7 @@ async function execute(form) {
 
         // 未控除の社会保険リストに追加する
         user.undeductedSocialInsurances.push({
-          month: startOfMonth,
+          month: paymentMonth,
           pension: user.currentPensionInsurance.控除額,
           health: user.currentHealthInsurance.介護保険の被保険者でない場合_控除額,
           care: withCareInsurance ?
