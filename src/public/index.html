@@ -71,28 +71,41 @@
   margin-right: .25em;
 }
 
-input[type=text], textarea {
-  width: 32em;
-  max-width: 100%;
-  display: block;
-  margin-bottom: .5em;
-  padding: .5em;
-  font-family: inherit;
-}
-textarea {
-  min-height: 10em;
-}
-button {
-  width: 100%;
-  max-width: 32em;
-  display: block;
-  padding: .4em .5em;
-  border-radius: .25em;
-  font-family: inherit;
-}
-@media screen and (min-width: 1024px) {
+form {
+  * {
+    font-size: 1em;
+  }
+  fieldset {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    min-inline-size: 0;
+  }
+  .input, input[type=text], textarea {
+    width: 32em;
+    max-width: 100%;
+    display: block;
+    margin-bottom: .5em;
+    font-family: inherit;
+  }
+  input[type=text], textarea {
+    padding: .5em;
+  }
+  textarea {
+    min-height: 10em;
+  }
   button {
-    width: inherit;
+    width: 100%;
+    max-width: 32em;
+    display: block;
+    padding: .4em .5em;
+    border-radius: .25em;
+    font-family: inherit;
+  }
+  @media screen and (min-width: 1024px) {
+    button {
+      width: inherit;
+    }
   }
 }
 
@@ -236,10 +249,15 @@ address {
   <section id="contact">
     <h1>contact</h1>
     <article>
-      <form onsubmit="Contact.send(); return false">
-        <input type="text" placeholder="弊社からの返信を受け取るメールアドレス">
-        <textarea placeholder="メッセージをここに入力してください。"></textarea>
-        <button>送信</button>
+      <form onsubmit="Contact.send(event)">
+        <fieldset>
+          <input type="text" placeholder="弊社からの返信を受け取るメールアドレス">
+          <textarea placeholder="メッセージをここに入力してください。"></textarea>
+          <div class="input">
+            <label><input type="checkbox">営業目的</label>
+          </div>
+          <button>送信</button>
+        </fieldset>
       </form>
     </article>
   </section>
