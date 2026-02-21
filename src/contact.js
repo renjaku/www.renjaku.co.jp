@@ -5,20 +5,34 @@ function rot13(s) {
 async function send(event) {
   event.preventDefault();
 
-  const fieldset = event.target.querySelector('fieldset');
-  const email = event.target.querySelector('input[type=text]');
-  const message = event.target.querySelector('textarea');
-  const sales = event.target.querySelector('input[type=checkbox]');
+  const form = event.target;
+  const fieldset = form.querySelector('fieldset');
+  const name = form.querySelector('input[name=name]');
+  const email = form.querySelector('input[name=email], input[type=email]');
+  const message = form.querySelector('textarea[name=message], textarea');
+  const category = form.querySelector('select[name=category]');
+
+  if (!fieldset || !email || !message) {
+    window.alert('フォームの構成が正しくありません。');
+    return;
+  }
 
   const validErrors = [];
+  const nameValue = name?.value.trim() ?? '';
   const emailValue = email.value.trim();
   const messageValue = message.value.trim();
+  const categoryValue = category?.value ?? '';
+  const salesCategories = new Set(['proposal']);
+  const sales = salesCategories.has(categoryValue);
 
-  if (emailValue && emailValue.split('@').length != 2)
-    validErrors.push('メールアドレスの形式に不備があります。');
+  if (emailValue && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(emailValue))
+    validErrors.push('メールアドレスの形式が正しくありません。');
 
   if (!messageValue)
-    validErrors.push('問い合わせ内容を入力してください。');
+    validErrors.push('メッセージをご記入ください。');
+
+  if (!categoryValue)
+    validErrors.push('お問い合わせ種別を選択してください。');
 
   if (validErrors.length > 0) {
     validErrors.forEach(x => window.alert(x));
@@ -27,11 +41,11 @@ async function send(event) {
 
   if (
     !emailValue &&
-    !window.confirm('弊社からの返信を受け取るメールアドレスが入力されていませんが、よろしいですか？')
+    !window.confirm('メールアドレス未入力のまま送信します。よろしいですか？')
   ) return;
 
   const endpoint = rot13(
-    sales.checked ?
+    sales ?
       'uggcf://qvfpbeq.pbz/ncv/jroubbxf/1444927091404701718/wKObdjrsl1D3tsz7Whzp6_QkDBqkwPQ42ILUjcKPdVVScEVdyehm74gTX821eQYViYoi' :
       'uggcf://qvfpbeq.pbz/ncv/jroubbxf/1444884058935922789/LIPs7aKFssswp-vsYQptXRAWGtDNz0y0cy2JmBZsV29dj8UdIVP2CIQVm2YW2hs8Zu5B'
   );
@@ -39,7 +53,9 @@ async function send(event) {
   const content = `
 @everyone ${messageValue}
 
-Reply-To: ${emailValue}
+Name: ${nameValue || '(empty)'}
+Reply-To: ${emailValue || '(empty)'}
+Category: ${categoryValue || '(none)'}
 `.trim();
 
   fieldset.disabled = true;
@@ -56,9 +72,9 @@ Reply-To: ${emailValue}
       return;
     }
 
-    window.alert('送信が完了しました。内容を確認次第ご返信いたしますので、しばらくお待ちください。');
+    window.alert('送信が完了しました。内容を確認のうえ、ご連絡いたします。');
   } catch {
-    window.alert('予期せぬエラーです。時間をおいて再度お試しください。');
+    window.alert('エラーが発生しました。時間をおいて再度お試しください。');
   } finally {
     fieldset.disabled = false;
   }

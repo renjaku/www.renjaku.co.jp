@@ -1,131 +1,6 @@
 {% extends "src/layouts/main.html" %}
 
 {% block head %}
-<style>
-#services {
-  .container {
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    padding: 0 10%;
-
-    article {
-      display: flex;
-      flex-direction: column;
-      gap: .25em;
-      margin: 0;
-      padding: 1em;
-      width: 16em;
-      text-align: center;
-
-      > * {
-        margin: 0;
-        padding: 0;
-      }
-
-      h1 {
-        margin: 0;
-
-        &::after {
-          content: none;
-        }
-      }
-    }
-  }
-}
-
-@media screen and (min-width: 1024px) {
-  #services {
-    .container {
-      justify-content: flex-start;
-    }
-  }
-}
-
-.anim {
-  font-size: 14px;
-  font-weight: 600;
-  line-height: 2;
-  opacity: 0;
-  transition: opacity .8s .2s cubic-bezier(0.23, 0.76, 0.37, 0.99),transform .8s .2s cubic-bezier(0.87, 0, 0.13, 1);
-  transform: translateX(-40px);
-}
-
-.anim.inviewed {
-  opacity: 1;
-  transform: translateX(0)
-}
-
-.design h1:before {
-  content: '🎨';
-  margin-right: .25em;
-}
-
-.develop h1:before {
-  content: '🛠️';
-  margin-right: .25em;
-}
-
-.payroll h1:before {
-  content: '📄';
-  margin-right: .25em;
-}
-
-form {
-  * {
-    font-size: 1em;
-  }
-  fieldset {
-    margin: 0;
-    padding: 0;
-    border: 0;
-    min-inline-size: 0;
-  }
-  .input, input[type=text], textarea {
-    width: 32em;
-    max-width: 100%;
-    display: block;
-    margin-bottom: .5em;
-    font-family: inherit;
-  }
-  input[type=text], textarea {
-    padding: .5em;
-  }
-  textarea {
-    min-height: 10em;
-  }
-  button {
-    width: 100%;
-    max-width: 32em;
-    display: block;
-    padding: .4em .5em;
-    border-radius: .25em;
-    font-family: inherit;
-  }
-  @media screen and (min-width: 1024px) {
-    button {
-      width: inherit;
-    }
-  }
-}
-
-table {
-  border: 1px solid gray;
-  border-collapse: collapse;
-
-  th, td {
-    border: 1px solid gray;
-    padding: .5em;
-  }
-}
-address {
-  display: block;
-  font-style: normal;
-  font-weight: normal;
-  margin: .5em 0;
-}
-</style>
-
 {% for schema in schemas %}
 <script type="application/ld+json">
   {{ schema | json(2) }}
@@ -135,141 +10,103 @@ address {
 
 {% block main %}
 <main>
-  <section>
-    <p>連雀株式会社では、Web デザインやシステム開発を承っております。</p>
-  </section>
-
-  <section id="services">
-    <h1>services</h1>
-    <div class="container anim">
-      <article class="design">
-        <h1>デザイン</h1>
-        <p>Web / アプリ / ロゴ / etc.</p>
-      </article>
-      <article class="develop">
-        <h1>システム開発</h1>
-        <p>Python / JavaScript / etc.</p>
-      </article>
+  <section class="hero">
+    <div class="container">
+      <h1>Web デザインやシステム開発を承っております</h1>
+      <p>連雀株式会社は、Web システム開発・サイト制作・デザインを通じてお客様のビジネスをサポートします。</p>
+      <a class="cta-btn" href="#contact">お問い合わせ</a>
     </div>
   </section>
 
-  <section id="profile">
-    <h1>profile</h1>
-    <article>
-      <table>
-        <tr>
-          <td>商号</td>
-          <td>
-            <span lang="ja">{{ corporateName }}</span>
-            (<span lang="en">{{ en.corporateName }}</span>)
-          </td>
-        </tr>
-        <tr>
-          <td>事業内容</td>
-          <td>{{ business }}</td>
-        </tr>
-        <tr>
-          <td>設立</td>
-          <td>{{ established | dateFormat('YYYY/M/D') }}</td>
-        </tr>
-        <tr>
-          <td>資本金</td>
-          <td>&yen;{{ capitalStock | numberFormat }}</td>
-        </tr>
-        <tr>
-          <td>本社所在地</td>
-          <td>
-            <address lang="ja">
-              〒{{ address.postalCode }}<br>
-              {{ address.region }}{{ address.locality }}{{ address.streetAddress }}
-            </address>
-            <address lang="en">
-              {{ en.address.streetAddress }},<br>
-              {{ en.address.locality }}, {{ en.address.region }} {{ en.address.postalCode }},
-              {{ en.address.country }}
-            </address>
-          </td>
-        </tr>
-        <tr>
-          <td>代表者</td>
-          <td>
-            <span>代表取締役</span>
-            <span>{{ representative }}</span>
-          </td>
-        </tr>
-        <tr>
-          <td>会社法人等番号</td>
-          <td>{{ corporateNumber.slice(1) }}</td>
-        </tr>
-        <tr>
-          <td>法人番号</td>
-          <td>
-            <a href="https://www.houjin-bangou.nta.go.jp/henkorireki-johoto.html?selHouzinNo={{ corporateNumber }}">
-              {{ corporateNumber }}
-            </a>
-          </td>
-        </tr>
-        <tr>
-          <td>適格請求書発行事業者の登録番号</td>
-          <td>
-            <a href="https://www.invoice-kohyo.nta.go.jp/regno-search/detail?selRegNo={{ corporateNumber }}">
-              T{{ corporateNumber }}
-            </a>
-          </td>
-        </tr>
-        <tr>
-          <td>従業員数</td>
-          <td>{{ employees }} 人</td>
-        </tr>
-        <tr>
-          <td>参考リンク</td>
-          <td>
-            <ul>
-              <li>
-                <a href="https://info.gbiz.go.jp/hojin/ichiran?hojinBango={{ corporateNumber }}">
-                  連雀株式会社 | gBizINFO
-                </a>
-              </li>
-              <li>
-                <a href="https://www.facebook.com/renjaku.co.jp">
-                  連雀株式会社 | Facebook
-                </a>
-              </li>
-            </ul>
-          </td>
-        </tr>
-      </table>
-    </article>
+  <section class="section services" id="services">
+    <div class="container">
+      <div class="section-head">
+        <h2>Services</h2>
+        <p>提供しているサービス</p>
+      </div>
+      <div class="service-cards">
+        <article class="service-card">
+          <p class="emoji">🛠️</p>
+          <h3>システム開発</h3>
+          <p class="meta">Python / TypeScript / etc.</p>
+          <p>Webアプリケーションや業務システムの設計・開発を承ります。スケーラブルで保守性の高いシステムを構築します。</p>
+        </article>
+        <article class="service-card">
+          <p class="emoji">🎨</p>
+          <h3>デザイン</h3>
+          <p class="meta">Web / アプリ / ロゴ / etc.</p>
+          <p>ウェブサイトのデザインからロゴ制作、アプリのUIデザインまで幅広く対応いたします。</p>
+        </article>
+      </div>
+    </div>
   </section>
 
-  <section id="contact">
-    <h1>contact</h1>
-    <article>
+  <section class="section profile" id="profile">
+    <div class="container">
+      <div class="section-head">
+        <h2>Profile</h2>
+        <p>会社概要</p>
+      </div>
+      <dl class="profile-table">
+        <div><dt>商号</dt><dd>{{ corporateName }}</dd></div>
+        <div><dt>事業内容</dt><dd>{{ business }}</dd></div>
+        <div><dt>設立</dt><dd>{{ established | dateFormat('YYYY 年 M 月 D 日') }}</dd></div>
+        <div><dt>資本金</dt><dd>{{ (capitalStock / 10000) | numberFormat }} 万円</dd></div>
+        <div><dt>本社所在地</dt><dd>〒{{ address.postalCode }} {{ address.region }}{{ address.locality }}{{ address.streetAddress }}</dd></div>
+        <div><dt>代表者</dt><dd>代表取締役 {{ representative }}</dd></div>
+        <div><dt>会社法人等番号</dt><dd>{{ corporateNumber.slice(1) }}</dd></div>
+        <div>
+          <dt>法人番号</dt>
+          <dd>
+            <a href="https://www.houjin-bangou.nta.go.jp/henkorireki-johoto.html?selHouzinNo={{ corporateNumber }}">{{ corporateNumber }}</a>
+          </dd>
+        </div>
+        <div>
+          <dt>適格請求書発行事業者の登録番号</dt>
+          <dd>
+            <a href="https://www.invoice-kohyo.nta.go.jp/regno-search/detail?selRegNo={{ corporateNumber }}">T{{ corporateNumber }}</a>
+          </dd>
+        </div>
+        <div><dt>従業員数</dt><dd>{{ employees }} 人</dd></div>
+        <div class="links-row">
+          <dt>参考リンク</dt>
+          <dd>
+            <a href="https://info.gbiz.go.jp/hojin/ichiran?hojinBango={{ corporateNumber }}">連雀株式会社 | gBizINFO</a>
+            <a href="https://www.facebook.com/renjaku.co.jp">連雀株式会社 | Facebook</a>
+          </dd>
+        </div>
+      </dl>
+    </div>
+  </section>
+
+  <section class="section contact" id="contact">
+    <div class="container">
+      <div class="section-head">
+        <h2>Contact</h2>
+        <p>お問い合わせ</p>
+      </div>
       <form onsubmit="Contact.send(event)">
         <fieldset>
-          <input type="text" placeholder="弊社からの返信を受け取るメールアドレス">
-          <textarea placeholder="メッセージをここに入力してください。"></textarea>
-          <div class="input">
-            <label><input type="checkbox">営業目的</label>
-          </div>
-          <button>送信</button>
+          <label for="contact-name">お名前</label>
+          <input id="contact-name" name="name" type="text" placeholder="山田 太郎">
+
+          <label for="contact-email">メールアドレス</label>
+          <input id="contact-email" name="email" type="email" placeholder="example@mail.com">
+
+          <label for="contact-message">メッセージ</label>
+          <textarea id="contact-message" name="message" placeholder="ご用件をご記入ください..."></textarea>
+
+          <label for="contact-category">お問い合わせ種別</label>
+          <select id="contact-category" name="category" required>
+            <option value="" selected disabled>選択してください</option>
+            <option value="proposal">ご提案・パートナー相談</option>
+            <option value="other">その他</option>
+          </select>
+
+          <button type="submit">送信する</button>
         </fieldset>
       </form>
-    </article>
+    </div>
   </section>
 </main>
-
-<script>
-const serviceContainer = document.querySelector('#services .container');
-
-if (window.sessionStorage.checkin) {
-  serviceContainer.classList.add('inviewed');
-} else {
-  // 謎のアニメーションを動かす
-  window.setTimeout(() => {
-    serviceContainer.classList.add('inviewed');
-    window.sessionStorage.checkin = true;
-  });
-}
-</script>
 {% endblock %}
