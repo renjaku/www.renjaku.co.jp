@@ -74,7 +74,7 @@
                   "id": "skwwt",
                   "name": "navServices",
                   "fill": "#374151",
-                  "content": "Services",
+                  "content": "製品・サービス",
                   "fontFamily": "Inter",
                   "fontSize": 14,
                   "fontWeight": "500"
@@ -84,7 +84,7 @@
                   "id": "iIpSu",
                   "name": "navProfile",
                   "fill": "#374151",
-                  "content": "Profile",
+                  "content": "会社概要",
                   "fontFamily": "Inter",
                   "fontSize": 14,
                   "fontWeight": "500"
@@ -94,7 +94,7 @@
                   "id": "Mmkl7",
                   "name": "navContact",
                   "fill": "#374151",
-                  "content": "Contact",
+                  "content": "お問い合わせ",
                   "fontFamily": "Inter",
                   "fontSize": 14,
                   "fontWeight": "500"
@@ -643,7 +643,7 @@
                           "id": "q2LVd",
                           "name": "row3ValueText",
                           "fill": "#0D0D0D",
-                          "content": "2020年1月8日",
+                          "content": "2020 年 1 月 8 日",
                           "fontFamily": "Inter",
                           "fontSize": 14,
                           "fontWeight": "normal"
@@ -715,7 +715,7 @@
                           "id": "tRc6R",
                           "name": "row5ValueText",
                           "fill": "#0D0D0D",
-                          "content": "100万円",
+                          "content": "100 万円",
                           "fontFamily": "Inter",
                           "fontSize": 14,
                           "fontWeight": "normal"
@@ -2161,7 +2161,7 @@
                           "type": "text",
                           "id": "lZnEy",
                           "fill": "#111827",
-                          "content": "2020年1月8日",
+                          "content": "2020 年 1 月 8 日",
                           "fontFamily": "Inter",
                           "fontSize": 13,
                           "fontWeight": "normal"
@@ -2231,7 +2231,7 @@
                           "type": "text",
                           "id": "7TVY8",
                           "fill": "#111827",
-                          "content": "¥1,000,000",
+                          "content": "100 万円",
                           "fontFamily": "Inter",
                           "fontSize": 13,
                           "fontWeight": "normal"

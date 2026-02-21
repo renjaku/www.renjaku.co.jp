@@ -22,6 +22,7 @@ async function send(event) {
   const emailValue = email.value.trim();
   const messageValue = message.value.trim();
   const categoryValue = category?.value ?? '';
+  const categoryName = category?.options?.[category?.selectedIndex]?.innerText;
   const salesCategories = new Set(['proposal']);
   const sales = salesCategories.has(categoryValue);
 
@@ -55,7 +56,7 @@ async function send(event) {
 
 Name: ${nameValue || '(empty)'}
 Reply-To: ${emailValue || '(empty)'}
-Category: ${categoryValue || '(none)'}
+Category: ${categoryName || '(none)'}
 `.trim();
 
   fieldset.disabled = true;

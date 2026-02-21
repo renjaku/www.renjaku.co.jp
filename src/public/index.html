@@ -88,17 +88,18 @@
       <form onsubmit="Contact.send(event)">
         <fieldset>
           <label for="contact-name">お名前</label>
-          <input id="contact-name" name="name" type="text" placeholder="山田 太郎">
+          <input id="contact-name" name="name" type="text" placeholder="山田 太郎" required>
 
           <label for="contact-email">メールアドレス</label>
-          <input id="contact-email" name="email" type="email" placeholder="example@mail.com">
+          <input id="contact-email" name="email" type="email" placeholder="example@mail.com" required>
 
           <label for="contact-message">メッセージ</label>
-          <textarea id="contact-message" name="message" placeholder="ご用件をご記入ください..."></textarea>
+          <textarea id="contact-message" name="message" placeholder="ご用件をご記入ください..." required></textarea>
 
           <label for="contact-category">お問い合わせ種別</label>
           <select id="contact-category" name="category" required>
             <option value="" selected disabled>選択してください</option>
+            <option value="product">製品・サービスについて</option>
             <option value="proposal">ご提案・パートナー相談</option>
             <option value="other">その他</option>
           </select>

@@ -8,6 +8,7 @@
 {% for bundle in $bundles %}
 <script src="{{ bundle }}" defer></script>
 {% endfor %}
+<link rel="icon" href="/favicon.svg" type="image/svg+xml" sizes="any">
 <link rel="icon" href="/favicon.ico">
 <link rel="stylesheet" type="text/css" href="/css/global.css">
 <link rel="stylesheet" type="text/css" href="{% if main_css %}{{ main_css }}{% else %}/css/main.css{% endif %}">
