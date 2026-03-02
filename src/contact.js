@@ -23,7 +23,7 @@ async function send(event) {
   const messageValue = message.value.trim();
   const categoryValue = category?.value ?? '';
   const categoryName = category?.options?.[category?.selectedIndex]?.innerText;
-  const salesCategories = new Set(['proposal']);
+  const salesCategories = new Set(['sales']);
   const sales = salesCategories.has(categoryValue);
 
   if (emailValue && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(emailValue))
