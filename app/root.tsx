@@ -26,33 +26,26 @@ function useGoogleAnalytics(): void {
   );
 
   useEffect(() => {
-    if (!GA_ID || typeof window === "undefined" || window.location.hostname === "localhost") {
-      return;
-    }
-
-    const existing = document.querySelector<HTMLScriptElement>(
-      `script[src^="https://www.googletagmanager.com/gtag/js?id=${GA_ID}"]`
-    );
-    if (!existing) {
-      const script = document.createElement("script");
-      script.async = true;
-      script.src = `https://www.googletagmanager.com/gtag/js?id=${GA_ID}`;
-      document.head.append(script);
-    }
-
+    if (
+      !GA_ID ||
+      typeof window === "undefined" ||
+      window.location.hostname === "localhost"
+    ) return;
     const w = window as Window & {
       dataLayer?: unknown[];
       gtag?: (...args: unknown[]) => void;
     };
     w.dataLayer = w.dataLayer || [];
-    w.gtag =
-      w.gtag ||
-      function gtag(...args: unknown[]) {
-        w.dataLayer?.push(args);
-      };
-    w.gtag("js", new Date());
-    w.gtag("config", GA_ID, { send_page_view: false });
-    w.gtag("event", "page_view", { page_path: pathname });
+    function gtag(..._: unknown[]) { w.dataLayer?.push(arguments); }
+    gtag("js", new Date());
+    gtag("config", GA_ID);
+    const tagSrc = `https://www.googletagmanager.com/gtag/js?id=${GA_ID}`;
+    const existing = document.querySelector(`script[src^="${tagSrc}"]`);
+    if (!existing) {
+      const script = document.createElement("script");
+      script.src = tagSrc;
+      document.querySelector("head")!.append(script);
+    }
   }, [pathname]);
 }
 
