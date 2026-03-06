@@ -1,2 +1,5 @@
+.env
+.react-router/
 dist/
+build/
 node_modules/

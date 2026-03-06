@@ -1,4 +1,0 @@
-User-agent: baidu
-Crawl-delay: 1
-
-Sitemap: https://www.renjaku.co.jp/sitemap.xml

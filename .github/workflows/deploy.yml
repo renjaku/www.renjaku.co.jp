@@ -1,9 +1,10 @@
-name: CI
+name: Deploy
 
 on:
   push:
     branches:
     - main
+  workflow_dispatch:
 
 jobs:
   build:
@@ -25,11 +26,16 @@ jobs:
 
     - name: Build
       run: npm run build
+      env:
+        VITE_GA_ID: ${{ vars.GA_ID }}
+        VITE_CONTACT_WEBHOOK_URL: ${{ vars.CONTACT_WEBHOOK_URL }}
+        VITE_CONTACT_WEBHOOK_SALES_URL: ${{ vars.CONTACT_WEBHOOK_SALES_URL }}
+        SITE_URL: ${{ vars.SITE_URL }}
 
     - name: Upload
       uses: actions/upload-pages-artifact@v3
       with:
-        path: dist
+        path: build/client
 
   deploy:
     # Add a dependency to the build job

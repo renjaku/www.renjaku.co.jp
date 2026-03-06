@@ -8,28 +8,27 @@
     "node": ">=22"
   },
   "dependencies": {
-    "encoding-japanese": "^2.1.0",
-    "moment": "^2.30.1",
-    "yaml": "^2.4.3"
+    "@react-router/node": "^7.9.3",
+    "date-fns": "^4.1.0",
+    "isbot": "^5",
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1",
+    "react-router": "^7.9.3"
   },
   "devDependencies": {
-    "chokidar-cli": "^3.0.0",
-    "concurrently": "^8.2.2",
-    "jsdom": "^24.1.0",
-    "nunjucks": "^3.2.4",
-    "webpack": "^5.105.0",
-    "webpack-cli": "^6.0.1",
-    "webpack-dev-server": "^5.2.1"
+    "@react-router/dev": "^7.9.3",
+    "@types/react": "^19.1.11",
+    "@types/react-dom": "^19.1.7",
+    "typescript": "^5.9.2",
+    "vite": "^7.1.5"
   },
   "scripts": {
-    "build": "webpack --config webpack.config.js --env production",
-    "build:dev": "webpack --config webpack.config.js --env development",
-    "clean": "node -e \"const fs = require('fs'); const path = require('path'); const dir = 'dist'; if (!fs.existsSync(dir)) process.exit(0); fs.readdirSync(dir).forEach(file => { const filePath = path.join(dir, file); fs.statSync(filePath).isDirectory() ? fs.rmSync(filePath, { recursive: true }) : fs.unlinkSync(filePath); }); console.log('Cleared dist directory');\"",
+    "build": "react-router build && node scripts/copy-404.mjs",
+    "build:dev": "vite build",
+    "clean": "node -e \"const fs=require('fs');const dir='build';if(fs.existsSync(dir)){fs.rmSync(dir,{recursive:true,force:true});}console.log('Cleared build directory');\"",
     "clean:build": "npm run clean && npm run build",
     "clean:build:dev": "npm run clean && npm run build:dev",
-    "dev": "concurrently \"npm run clean:build:dev -- --watch\" \"npm run serve:dev\" \"npm run watch:dev\"",
-    "fetch": "node scripts/fetch-employees.js",
-    "serve:dev": "webpack serve --config webpack.config.js --env development",
-    "watch:dev": "chokidar \"src/**\" --command \"npm run build:dev\""
+    "dev": "react-router dev",
+    "preview": "vite preview"
   }
 }
