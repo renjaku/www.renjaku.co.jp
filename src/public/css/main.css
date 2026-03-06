@@ -254,12 +254,12 @@ a {
 .profile-table dd {
   margin: 0;
   padding: 14px;
-  display: flex;
-  align-items: center;
   font-size: 12px;
 }
 
 .profile-table dt {
+  display: flex;
+  align-items: center;
   color: #374151;
   font-weight: 500;
   background: var(--surface);
@@ -267,14 +267,40 @@ a {
 }
 
 .profile-table dd {
+  display: grid;
+  align-content: center;
   color: var(--ink);
   font-size: 13px;
   line-height: 1.55;
 }
 
+.profile-table dd > p {
+  margin: 0;
+}
+
+.profile-table dd address {
+  margin: 0;
+  font-style: normal;
+}
+
+.profile-table .address-row dd {
+  align-content: start;
+  gap: 8px;
+}
+
 .profile-table .links-row dd {
   display: grid;
   gap: 6px;
+}
+
+.profile-table .links-row ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.profile-table .links-row li {
+  margin: 0;
 }
 
 .profile-table a {
@@ -455,6 +481,15 @@ a {
   .profile-table .links-row dt,
   .profile-table .links-row dd {
     min-height: 76px;
+  }
+
+  .profile-table .address-row dt,
+  .profile-table .address-row dd {
+    min-height: 76px;
+  }
+
+  .profile-table .address-row dd {
+    padding: 14px 24px;
   }
 
   .profile-table .links-row dd {

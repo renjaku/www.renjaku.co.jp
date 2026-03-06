@@ -48,12 +48,39 @@
         <p>会社概要</p>
       </div>
       <dl class="profile-table">
-        <div><dt>商号</dt><dd>{{ corporateName }}</dd></div>
+        <div>
+          <dt>商号</dt>
+          <dd>
+            <p>
+              <span lang="ja">{{ corporateName }}</span>
+              （<span lang="en">{{ en.corporateName }}</span>）
+            </p>
+          </dd>
+        </div>
         <div><dt>事業内容</dt><dd>{{ business }}</dd></div>
         <div><dt>設立</dt><dd>{{ established | dateFormat('YYYY 年 M 月 D 日') }}</dd></div>
-        <div><dt>資本金</dt><dd>{{ (capitalStock / 10000) | numberFormat }} 万円</dd></div>
-        <div><dt>本社所在地</dt><dd>〒{{ address.postalCode }} {{ address.region }}{{ address.locality }}{{ address.streetAddress }}</dd></div>
-        <div><dt>代表者</dt><dd>代表取締役 {{ representative }}</dd></div>
+        <div><dt>資本金</dt><dd>¥{{ capitalStock | numberFormat }}</dd></div>
+        <div class="address-row">
+          <dt>本社所在地</dt>
+          <dd>
+            <address lang="ja">
+              〒{{ address.postalCode }}<br>
+              {{ address.region }}{{ address.locality }}{{ address.streetAddress }}
+            </address>
+            <address lang="en">
+              {{ en.address.streetAddress }},<br>
+              {{ en.address.locality }}, {{ en.address.region }} {{ en.address.postalCode }}, {{ en.address.country }}
+            </address>
+          </dd>
+        </div>
+        <div>
+          <dt>代表者</dt>
+          <dd>
+            <p>
+              <span>代表取締役</span> <span>{{ representative }}</span>
+            </p>
+          </dd>
+        </div>
         <div><dt>会社法人等番号</dt><dd>{{ corporateNumber.slice(1) }}</dd></div>
         <div>
           <dt>法人番号</dt>
@@ -71,8 +98,16 @@
         <div class="links-row">
           <dt>参考リンク</dt>
           <dd>
-            <a href="https://info.gbiz.go.jp/hojin/ichiran?hojinBango={{ corporateNumber }}">連雀株式会社 | gBizINFO</a>
-            <a href="https://www.facebook.com/renjaku.co.jp">連雀株式会社 | Facebook</a>
+            <ul>
+              <li>
+                <a href="https://info.gbiz.go.jp/hojin/ichiran?hojinBango={{ corporateNumber }}">
+                  {{ corporateName }} | gBizINFO
+                </a>
+              </li>
+              <li>
+                <a href="https://www.facebook.com/renjaku.co.jp">{{ corporateName }} | Facebook</a>
+              </li>
+            </ul>
           </dd>
         </div>
       </dl>
