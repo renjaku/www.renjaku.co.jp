@@ -178,7 +178,7 @@ export default function HomeRoute() {
                   {site.en.address.streetAddress},
                   <br />
                   {site.en.address.locality}, {site.en.address.region} {site.en.address.postalCode},{" "}
-                  {site.en.address.country}
+                  {site.en.address.countryName}
                 </address>
               </dd>
             </div>

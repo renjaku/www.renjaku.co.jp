@@ -8,7 +8,7 @@ type SiteData = {
   established: string;
   capitalStock: number;
   address: {
-    country: string;
+    countryCode: string;
     postalCode: string;
     locality: string;
     region: string;
@@ -25,7 +25,7 @@ export function createSchemas(site: SiteData) {
       url: site.url,
       address: {
         "@type": "PostalAddress",
-        addressCountry: site.address.country,
+        addressCountry: site.address.countryCode,
         postalCode: site.address.postalCode,
         addressLocality: site.address.locality,
         addressRegion: site.address.region,
@@ -62,4 +62,3 @@ export function createSchemas(site: SiteData) {
     },
   ];
 }
-

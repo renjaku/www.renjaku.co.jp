@@ -11,7 +11,7 @@
   "url": "https://www.renjaku.co.jp/",
   "contactPage": "/#contact",
   "address": {
-    "country": "JPN",
+    "countryCode": "JP",
     "postalCode": "150-0031",
     "locality": "渋谷区",
     "region": "東京都",
@@ -20,7 +20,7 @@
   "en": {
     "corporateName": "Renjaku Inc.",
     "address": {
-      "country": "Japan",
+      "countryName": "Japan",
       "postalCode": "150-0031",
       "locality": "Shibuya-ku",
       "region": "Tokyo",
@@ -28,4 +28,3 @@
     }
   }
 }
-
