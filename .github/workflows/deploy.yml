@@ -28,8 +28,7 @@ jobs:
       run: npm run build
       env:
         VITE_GA_ID: ${{ vars.GA_ID }}
-        VITE_CONTACT_WEBHOOK_URL: ${{ vars.CONTACT_WEBHOOK_URL }}
-        VITE_CONTACT_WEBHOOK_SALES_URL: ${{ vars.CONTACT_WEBHOOK_SALES_URL }}
+        VITE_INQUIRY_ENDPOINT_URL: ${{ vars.INQUIRY_ENDPOINT_URL }}
         SITE_URL: ${{ vars.SITE_URL }}
 
     - name: Upload

@@ -23,6 +23,7 @@
     "vite": "^7.3.7"
   },
   "scripts": {
+    "test": "node --test tests/*.test.mjs",
     "build": "react-router build && node scripts/copy-404.mjs",
     "build:dev": "vite build",
     "clean": "node -e \"const fs=require('fs');const dir='build';if(fs.existsSync(dir)){fs.rmSync(dir,{recursive:true,force:true});}console.log('Cleared build directory');\"",

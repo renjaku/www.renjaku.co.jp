@@ -1,92 +1,29 @@
-import type { ComponentProps } from "react";
+import { useState } from "react";
 import type { MetaFunction } from "react-router";
 import site from "../data/site.json";
+import { InquiryReceiptDownload } from "../components/inquiry-receipt-download";
 import { formatDate, formatNumber } from "../lib/format";
 import { createSchemas } from "../lib/schema";
+import { sendContact, type ContactFeedback } from "../lib/send-contact";
 
 export const meta: MetaFunction = () => [
   { title: site.title },
   { name: "description", content: site.description },
 ];
 
-const CONTACT_WEBHOOK_URL = import.meta.env.VITE_CONTACT_WEBHOOK_URL || "";
-const CONTACT_WEBHOOK_SALES_URL = import.meta.env.VITE_CONTACT_WEBHOOK_SALES_URL || "";
+const INQUIRY_ENDPOINT_URL = import.meta.env.VITE_INQUIRY_ENDPOINT_URL || "";
 
-type FormSubmitEvent = Parameters<NonNullable<ComponentProps<"form">["onSubmit"]>>[0];
-
-async function sendContact(event: FormSubmitEvent) {
-  event.preventDefault();
-
-  const form = event.currentTarget;
-  const fieldset = form.querySelector("fieldset");
-  const name = form.querySelector<HTMLInputElement>("input[name=name]");
-  const email = form.querySelector<HTMLInputElement>("input[name=email], input[type=email]");
-  const message = form.querySelector<HTMLTextAreaElement>("textarea[name=message], textarea");
-  const category = form.querySelector<HTMLSelectElement>("select[name=category]");
-
-  if (!fieldset || !email || !message) {
-    window.alert("フォームの構成が正しくありません。");
-    return;
-  }
-
-  const validErrors: string[] = [];
-  const nameValue = name?.value.trim() ?? "";
-  const emailValue = email.value.trim();
-  const messageValue = message.value.trim();
-  const categoryValue = category?.value ?? "";
-  const categoryName = category?.options?.[category?.selectedIndex]?.innerText;
-  const sales = categoryValue === "sales";
-
-  if (emailValue && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(emailValue))
-    validErrors.push("メールアドレスの形式が正しくありません。");
-
-  if (!messageValue) validErrors.push("メッセージをご記入ください。");
-  if (!categoryValue) validErrors.push("お問い合わせ種別を選択してください。");
-
-  if (validErrors.length > 0) {
-    validErrors.forEach((x) => window.alert(x));
-    return;
-  }
-
-  if (!emailValue && !window.confirm("メールアドレス未入力のまま送信します。よろしいですか？")) return;
-
-  const endpoint = sales ? CONTACT_WEBHOOK_SALES_URL || CONTACT_WEBHOOK_URL : CONTACT_WEBHOOK_URL;
-  if (!endpoint) {
-    window.alert("送信先の設定が不足しているため、現在このフォームは利用できません。");
-    return;
-  }
-
-  const content = `
-@everyone ${messageValue}
-
-Name: ${nameValue || "(empty)"}
-Reply-To: ${emailValue || "(empty)"}
-Category: ${categoryName || "(none)"}
-`.trim();
-
-  fieldset.disabled = true;
-
-  try {
-    const res = await fetch(endpoint, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ content }),
-    });
-
-    if (!res.ok) {
-      window.alert(`HTTP Error: ${res.status}: ${res.statusText}`);
-      return;
-    }
-
-    window.alert("送信が完了しました。内容を確認のうえ、ご連絡いたします。");
-  } catch {
-    window.alert("エラーが発生しました。時間をおいて再度お試しください。");
-  } finally {
-    fieldset.disabled = false;
-  }
+function formatResponseDate(value: string) {
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return value;
+  return new Intl.DateTimeFormat("ja-JP", {
+    timeZone: "Asia/Tokyo", dateStyle: "medium", timeStyle: "medium",
+  }).format(date) + "（日本時間）";
 }
 
 export default function HomeRoute() {
+  const [sending, setSending] = useState(false);
+  const [feedback, setFeedback] = useState<ContactFeedback | null>(null);
   const schemas = createSchemas(site);
   return (
     <main>
@@ -243,17 +180,22 @@ export default function HomeRoute() {
             <h2>Contact</h2>
             <p>お問い合わせ</p>
           </div>
-          <form onSubmit={sendContact}>
-            <fieldset>
+          <form onSubmit={(event) => sendContact(event, INQUIRY_ENDPOINT_URL, {
+            onSendingChange: setSending,
+            onFeedback: setFeedback,
+          })}>
+            <fieldset disabled={sending} aria-busy={sending}>
               <label htmlFor="contact-name">お名前</label>
-              <input id="contact-name" name="name" type="text" placeholder="山田 太郎" required />
+              <input id="contact-name" name="name" type="text" autoComplete="name" placeholder="田中 太郎" maxLength={100} required />
 
               <label htmlFor="contact-email">メールアドレス</label>
               <input
                 id="contact-email"
                 name="email"
                 type="email"
-                placeholder="example@mail.com"
+                autoComplete="email"
+                placeholder="taro.tanaka@example.com"
+                maxLength={254}
                 required
               />
 
@@ -262,6 +204,7 @@ export default function HomeRoute() {
                 id="contact-message"
                 name="message"
                 placeholder="ご用件をご記入ください..."
+                maxLength={10_000}
                 required
               />
 
@@ -278,8 +221,27 @@ export default function HomeRoute() {
                 <option value="other">その他（上記に当てはまらない）</option>
               </select>
 
-              <button type="submit">送信する</button>
+              <button type="submit">
+                {sending && <span className="contact-spinner" aria-hidden="true" />}
+                {sending ? "送信中…" : "送信する"}
+              </button>
             </fieldset>
+            <div className="contact-status" role="status" aria-live="polite" aria-atomic="true">
+              {sending ? "問い合わせを送信しています。しばらくお待ちください。" : feedback && (
+                <p className={`contact-feedback contact-feedback--${feedback.type}`}>
+                  <strong>{feedback.type === "success" ? "送信完了" : "ご確認ください"}</strong>
+                  <span>{feedback.message}</span>
+                  {feedback.responseDate && (
+                    <span className="contact-response-date">
+                      応答日時：{formatResponseDate(feedback.responseDate)}
+                    </span>
+                  )}
+                </p>
+              )}
+            </div>
+            {!sending && feedback?.type === "success" && (
+              <InquiryReceiptDownload receipt={feedback.receipt} />
+            )}
           </form>
         </div>
       </section>
